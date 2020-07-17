@@ -50,11 +50,19 @@ import EssentialLink from 'components/EssentialLink.vue'
 
 export default {
   name: 'MainLayout',
-
   components: {
     EssentialLink
   },
-
+  computed: {
+    configs: {
+      get () {
+        return this.$store.state.translate.configs
+      },
+      set (val) {
+        this.$store.commit('translate/loadConfigs', val)
+      }
+    }
+  },
   data () {
     return {
       leftDrawerOpen: false,
