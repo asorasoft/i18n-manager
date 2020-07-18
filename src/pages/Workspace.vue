@@ -11,10 +11,11 @@
           ref="inputKey"
           @keydown.tab="onPressTab"
           @input="updateFinalKey"
+          @blur="updateFinalKey"
           v-model="displayKey"
         >
           <template v-slot:after>
-            <q-btn round dense flat icon="content_copy" />
+            <q-btn @click="onCopy" round dense flat icon="content_copy" />
           </template>
         </q-input>
         <q-scroll-area
@@ -24,8 +25,15 @@
             height: '60px'
           }"
         >
-        <div class="row no-wrap">
-          <q-chip clickable @click="choosekey(suggestion)" class="q-ma-sm" v-for="suggestion in suggestionList" :key="suggestion[suggestion.length -1]">
+        <div ref="suggestionContainer" class="row no-wrap">
+          <q-chip
+            :color="index === suggestionIndex ? 'primary' : ''"
+            :text-color="index === suggestionIndex ? 'white' : ''"
+            clickable
+            @click="choosekey(suggestion)"
+            class="q-ma-sm"
+            v-for="(suggestion, index) in suggestionList"
+            :key="suggestion[suggestion.length -1]">
             {{suggestion[suggestion.length -1]}}
           </q-chip>
         </div>
@@ -37,6 +45,7 @@
 
 <script>
 const fs = require('fs');
+import { copyToClipboard, scroll } from 'quasar';
 
 export default {
   name: 'Workspace',
@@ -65,14 +74,26 @@ export default {
     }
   },
   methods: {
-    updateFinalKey() {
+    onCopy () {
+      copyToClipboard(this.finalKey);
+    },
+    updateFinalKey () {
       this.finalKey = this.displayKey;
     },
     choosekey(keySequence) {
       this.finalKey = keySequence.join('.');
       this.$refs.inputKey.focus();
     },
+    scrollToElement (el) {
+      if (el) {
+        const target = scroll.getScrollTarget(el)
+        const offset = el.offsetLeft;
+        const duration = 600;
+        scroll.setHorizontalScrollPosition(target, offset, duration)
+      }
+    },
     onPressTab(e) {
+      e.preventDefault();
       this.suggestionList = this.existingKeys.filter(k => {
         const joinedKey = k.join('.');
         return joinedKey.startsWith(this.finalKey) && joinedKey.substr(this.finalKey.length).indexOf('.') < 0;
@@ -90,9 +111,12 @@ export default {
         }
       }
 
-      console.log(this.suggestionIndex);
-
-      e.preventDefault();
+      if (this.suggestionList.length > 0) {
+        this.displayKey = this.suggestionList[this.suggestionIndex].join('.')
+        this.$nextTick(() => {
+          this.scrollToElement(this.$refs.suggestionContainer.children[this.suggestionIndex]);
+        });
+      }
     },
     getFromKey(key) {
       return this.$store.getters['translate/getTranslationFromKey'](key);
@@ -112,6 +136,7 @@ export default {
   watch: {
     finalKey() {
       this.displayKey = this.finalKey;
+      this.suggestionIndex = null;
     },
     '$route.params.configIndex'() {
       this.updateWorkspace();
