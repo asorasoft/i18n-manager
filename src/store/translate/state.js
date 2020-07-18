@@ -3,8 +3,8 @@ export default function () {
     configs: [
       // {
       //   projectName: "",
-      //   localePath: "",
-      //   primaryLanguage: "",
+      //   localePath: "/root/aa",
+      //   primaryLanguage: "en.json",
       //   languageCodes: {
       //     "en.json": "en",
       //     "km.json": "km"

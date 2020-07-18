@@ -21,6 +21,7 @@ module.exports = function (/* ctx */) {
       'i18n',
       'axios',
       'load_config',
+      'helper'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css

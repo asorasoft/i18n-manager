@@ -10,9 +10,16 @@ export function saveConfig (
   // console.log(data);
   let configs = loadConfigsFromFile();
   if (configs.map(c => c.localePath).includes(data.localePath)) {
-    throw new Error('Path already exist in config');
+    configs = configs.map(c => {
+      if (c.localePath == data.localePath) {
+        return data;
+      } else {
+        return c;
+      }
+    })
+  } else {
+    configs.push(data);
   }
-  configs.push(data);
   saveConfigsToFile(context, configs);
 }
 
@@ -37,4 +44,18 @@ export function saveConfigsToFile (context, configs) {
 export function loadConfigs (context) {
   let configs = loadConfigsFromFile(context);
   context.commit('loadConfigs', configs);
+}
+
+export function loadTranslation ({getters, commit}, selectedConfigIndex) {
+  const config = getters.configs[selectedConfigIndex];
+  const files = fs.readdirSync(config.localePath).filter((fileName) => fileName.endsWith('.json'));
+  const rawTraslations = files.map(file => {
+        return fs.readFileSync(config.localePath + '/' + file).toString();
+      });
+  const translationList = rawTraslations.map(data => this._vm.$helpers.parseJson(data))
+  let translations = {}
+  files.forEach((file, index) => {
+    translations[file] = translationList[index]
+  })
+  commit('loadTranslations', translations);
 }

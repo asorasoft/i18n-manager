@@ -29,13 +29,31 @@
           header
           class="text-grey-8"
         >
-          Essential Links
+          Projects
         </q-item-label>
-        <EssentialLink
+        <drawer-action
           v-for="link in essentialLinks"
           :key="link.title"
           v-bind="link"
         />
+        <q-separator />
+
+        <q-item
+          clickable
+          v-for="(config, index) in configs"
+          :key="config.localePath"
+          @click="openWorkSpace(index)"
+        >
+          <q-item-section avatar>
+            <q-icon name="history"/>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ config.projectName }}</q-item-label>
+            <q-item-label caption>
+              {{ config.localePath }}
+            </q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -46,12 +64,12 @@
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue'
+import DrawerAction from 'components/DrawerAction.vue'
 
 export default {
   name: 'MainLayout',
   components: {
-    EssentialLink
+    DrawerAction
   },
   computed: {
     configs: {
@@ -63,6 +81,11 @@ export default {
       }
     }
   },
+  methods: {
+    openWorkSpace(index) {
+      this.$router.push({name: 'workspace', params: {configIndex: index}}).catch(err => {})
+    }
+  },
   data () {
     return {
       leftDrawerOpen: false,
@@ -71,24 +94,6 @@ export default {
           title: 'New Project',
           caption: 'Create new translation',
           icon: 'add',
-          routeName: 'create-project'
-        },
-        {
-          title: 'VSHOP App',
-          caption: 'Project for vshop',
-          icon: 'history',
-          routeName: 'create-project'
-        },
-        {
-          title: 'CashHero',
-          caption: 'Loan provider',
-          icon: 'history',
-          routeName: 'create-project'
-        },
-        {
-          title: 'CCInspection',
-          caption: 'Cambodia Construction Inspection',
-          icon: 'history',
           routeName: 'create-project'
         },
       ]
