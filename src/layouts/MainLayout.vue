@@ -53,6 +53,32 @@
               {{ config.localePath }}
             </q-item-label>
           </q-item-section>
+
+          <q-popup-proxy context-menu>
+            <q-list>
+              <q-item clickable>
+                <q-item-section>
+                  <q-icon name="settings"/>
+                </q-item-section>
+                <q-item-section>
+                  Configs
+                </q-item-section>
+                <q-item-section/>
+              </q-item>
+              <q-separator/>
+              <q-item clickable>
+                <q-item-section class="text-red">
+                  <q-icon name="delete"/>
+                </q-item-section>
+                <q-item-section>
+                  Delete
+                </q-item-section>
+                <q-item-section/>
+              </q-item>
+            </q-list>
+          </q-popup-proxy>
+
+
         </q-item>
       </q-list>
     </q-drawer>
@@ -82,6 +108,9 @@ export default {
     }
   },
   methods: {
+    showNotify () {
+      this.$q.notify((this.$q.platform.is.desktop ? 'Clicked' : 'Tapped') + ' on a context menu item.')
+    },
     openWorkSpace(index) {
       this.$router.push({name: 'workspace', params: {configIndex: index}}).catch(err => {})
     }

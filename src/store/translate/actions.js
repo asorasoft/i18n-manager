@@ -52,7 +52,7 @@ export function loadTranslation ({getters, commit}, selectedConfigIndex) {
   const rawTraslations = files.map(file => {
         return fs.readFileSync(config.localePath + '/' + file).toString();
       });
-  const translationList = rawTraslations.map(data => this._vm.$helpers.parseJson(data))
+  const translationList = rawTraslations.map(data => $helpers.parseJson(data))
   let translations = {}
   files.forEach((file, index) => {
     translations[file] = translationList[index]

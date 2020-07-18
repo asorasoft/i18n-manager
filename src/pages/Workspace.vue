@@ -1,6 +1,5 @@
 <template>
   <q-page padding>
-    <q-btn @click="test">Click here</q-btn>
     {{translations}}
   </q-page>
 </template>
@@ -22,7 +21,8 @@ export default {
   },
   methods: {
     test() {
-      this.$store.commit('translate/updateTranslations', {file: 'en.json', keys: 'alert', value: 'Hi my world', force: true});
+      // this.$store.commit('translate/updateTranslations', {file: 'en.json', keys: 'alert.exchange_rate_is_created', value: 'Hi my world', force: true});
+      // console.log(this.$store.getters['translate/getTranslationFromKey']('alert.exchange_rate_is_created'));
     }
   },
   created() {

@@ -2,13 +2,30 @@
 
 // "async" is optional;
 // more info on params: https://quasar.dev/quasar-cli/cli-documentation/boot-files#Anatomy-of-a-boot-file
-export default async ({ Vue }) => {
-  Vue.prototype.$helpers = {
+export default async ({ Vue, state }) => {
+  const helpers = {
     parseJson(jsonString) {
       try {
         return new Function(`return ${jsonString}`)();
       } catch (e) {
         throw new Errror("Invalid file");
+      }
+    },
+    getProperties(obj, keys) {
+      keys = keys.split('.');
+      let pointer = obj;
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i]
+        if (i === keys.length - 1) {
+          return pointer[key];
+        }
+        if (!pointer.hasOwnProperty(key)) {
+          throw new Error(`Key ${key} does not exist`);
+        } else if (typeof pointer[key] === 'string') {
+          throw new Error(`Key ${key} is a string, no more child`);
+        } else {
+          pointer = pointer[key]
+        }
       }
     },
     setProperties(obj, keys, value, force = false) {
@@ -43,4 +60,5 @@ export default async ({ Vue }) => {
       }
     }
   }
+  window.$helpers = helpers;
 }

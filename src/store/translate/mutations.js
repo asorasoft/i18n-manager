@@ -7,5 +7,5 @@ export function loadTranslations (state, translations) {
 }
 
 export function updateTranslations (state, {file, keys, value, force}) {
-  this._vm.$helpers.setProperties(this.state.translate.translations[file], keys, value, force);
+  $helpers.setProperties(this.state.translate.translations[file], keys, value, force);
 }
