@@ -45,7 +45,7 @@ export function loadConfigs (context) {
 
 export function loadTranslation ({getters, commit}, selectedConfigIndex) {
   const config = getters.configs[selectedConfigIndex];
-  const files = fs.readdirSync(config.localePath).filter((fileName) => fileName.endsWith('.json'));
+  const files = $helpers.getJsonFilesInFolder(config.localePath);
   const rawTraslations = files.map(file => {
         return fs.readFileSync(config.localePath + '/' + file).toString();
       });

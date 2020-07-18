@@ -1,9 +1,16 @@
 // import something here
+const fs = require('fs');
 
 // "async" is optional;
 // more info on params: https://quasar.dev/quasar-cli/cli-documentation/boot-files#Anatomy-of-a-boot-file
 export default async ({ Vue, state }) => {
   const helpers = {
+    getJsonFilesInFolder(path) {
+      if (!fs.existsSync(path)) {
+        return [];
+      }
+      return fs.readdirSync(path).filter((fileName) => fileName.endsWith('.json'));
+    },
     parseJson(jsonString) {
       try {
         return new Function(`return ${jsonString}`)();

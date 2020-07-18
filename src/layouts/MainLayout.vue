@@ -46,7 +46,7 @@
           @click="openWorkSpace(index)"
         >
           <q-item-section avatar :style="{minWidth: 0}">
-            <q-icon name="history"/>
+            <q-icon :name="pathExist(config.localePath) ? 'history' : ''" :color="pathExist(config.localePath) ? '' : 'red'"/>
           </q-item-section>
           <q-item-section>
             <q-item-label>{{ config.projectName }}</q-item-label>
@@ -98,7 +98,8 @@
 </template>
 
 <script>
-import DrawerAction from 'components/DrawerAction.vue'
+const fs = require('fs');
+import DrawerAction from 'components/DrawerAction.vue';
 
 export default {
   name: 'MainLayout',
@@ -123,7 +124,10 @@ export default {
       if (this.$route.name != 'workspace' || this.$route.params.configIndex != index) {
         this.$router.push({name: 'workspace', params: {configIndex: index}}).catch(err => {})
       }
-    }
+    },
+    pathExist(path) {
+      return fs.existsSync(path);
+    },
   },
   data () {
     return {

@@ -2,17 +2,21 @@
   <q-page padding>
     <div class="q-pa-md">
       <q-form class="q-gutter-md">
-        <div class="row">
-          <q-btn class="q-mr-sm" size="sm" color="red" icon="delete" label="delete"></q-btn>
-          <q-btn size="sm" color="warning" icon="edit" label="change key"></q-btn>
+        <div class="row" :style="{height: '25.72px'}">
+          <div v-show="existingKeys.map(k => k.join('.')).includes(displayKey)">
+            <q-btn class="q-mr-sm" size="sm" color="red" icon="delete" label="delete"></q-btn>
+            <q-btn size="sm" color="warning" icon="edit" label="change key"></q-btn>
+          </div>
         </div>
         <q-input
           filled
           ref="inputKey"
+          @keypress="onKeyPressed"
           @keydown.tab="onPressTab"
           @input="updateFinalKey"
           @blur="updateFinalKey"
           v-model="displayKey"
+          hint="Translation key"
         >
           <template v-slot:after>
             <q-btn @click="onCopy" round dense flat icon="content_copy" />
@@ -38,6 +42,12 @@
           </q-chip>
         </div>
         </q-scroll-area>
+
+        <q-input v-for="file in translationFiles" :key="file" filled>
+          <template v-slot:before>
+            <span :style="{fontSize: '14px'}">{{file.split('.')[0].toUpperCase()}}</span>
+          </template>
+        </q-input>
       </q-form>
     </div>
   </q-page>
@@ -58,6 +68,23 @@ export default {
     };
   },
   computed: {
+    translationFiles() {
+      return this.$helpers.getJsonFilesInFolder(this.config.localePath).sort((a, b) => {
+        if (a === this.config.primaryLanguage) {
+          return -1;
+        } else if (b === this.config.primaryLanguage) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+    },
+    config() {
+      return this.$store.getters['translate/configs'][this.$route.params.configIndex];
+    },
+    valueFromKey() {
+      return this.$store.getters['translate/getTranslationFromKey'](this.displayKey);
+    },
     helpers () {
       return this.$helpers;
     },
@@ -71,7 +98,7 @@ export default {
     },
     existingKeys() {
       return $helpers.extractKeys(...Object.values(this.translations));
-    }
+    },
   },
   methods: {
     onCopy () {
@@ -90,6 +117,28 @@ export default {
         const offset = el.offsetLeft;
         const duration = 600;
         scroll.setHorizontalScrollPosition(target, offset, duration)
+      }
+    },
+    onKeyPressed(e) {
+      if (e.ctrlKey) {
+        switch (e.key) {
+          case 'u':
+            this.displayKey = '';
+            break;
+          case 'w':
+            let key = this.displayKey;
+            while (key.length > 0 && key[key.length - 1] !== '.') {
+              key = key.substr(0, key.length - 1);
+            }
+            this.displayKey = key;
+            break;
+          case 'a':
+            this.$refs.displayKey.setSelectionRange(0, 0);
+            break;
+          case 'e':
+            this.$refs.displayKey.setSelectionRange(this.displayKey.length, this.displayKey.length);
+            break;
+        }
       }
     },
     onPressTab(e) {
@@ -131,6 +180,10 @@ export default {
     },
     updateWorkspace() {
       this.$store.dispatch('translate/loadTranslation', this.$route.params.configIndex);
+      this.displayKey = '';
+      this.finalKey = '';
+      this.suggestionIndex = null;
+      this.suggestionList = [];
     },
   },
   watch: {
