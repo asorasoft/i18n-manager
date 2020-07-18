@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          Asora – Translator
+          {{$route.name === 'workspace' ? configs[$route.params.configIndex].projectName : 'Asora – Translator'}}
         </q-toolbar-title>
 
       </q-toolbar>
@@ -41,10 +41,11 @@
         <q-item
           clickable
           v-for="(config, index) in configs"
+          :active="$route.name == 'workspace' && index.toString() == $route.params.configIndex"
           :key="config.localePath"
           @click="openWorkSpace(index)"
         >
-          <q-item-section avatar>
+          <q-item-section avatar :style="{minWidth: 0}">
             <q-icon name="history"/>
           </q-item-section>
           <q-item-section>
@@ -57,23 +58,30 @@
           <q-popup-proxy context-menu>
             <q-list>
               <q-item clickable>
-                <q-item-section>
-                  <q-icon name="settings"/>
+                <q-item-section :style="{minWidth: '24px'}">
+                  <q-icon name="vertical_align_top"/>
                 </q-item-section>
-                <q-item-section>
-                  Configs
+                <q-item-section :style="{minWidth: '100px'}">
+                  Move to top
                 </q-item-section>
-                <q-item-section/>
               </q-item>
               <q-separator/>
               <q-item clickable>
-                <q-item-section class="text-red">
+                <q-item-section :style="{minWidth: '24px'}">
+                  <q-icon name="settings"/>
+                </q-item-section>
+                <q-item-section :style="{minWidth: '100px'}">
+                  Configs
+                </q-item-section>
+              </q-item>
+              <q-separator/>
+              <q-item clickable>
+                <q-item-section class="text-red" :style="{minWidth: '24px'}">
                   <q-icon name="delete"/>
                 </q-item-section>
-                <q-item-section>
+                <q-item-section :style="{minWidth: '100px'}">
                   Delete
                 </q-item-section>
-                <q-item-section/>
               </q-item>
             </q-list>
           </q-popup-proxy>
@@ -112,7 +120,9 @@ export default {
       this.$q.notify((this.$q.platform.is.desktop ? 'Clicked' : 'Tapped') + ' on a context menu item.')
     },
     openWorkSpace(index) {
-      this.$router.push({name: 'workspace', params: {configIndex: index}}).catch(err => {})
+      if (this.$route.name != 'workspace' || this.$route.params.configIndex != index) {
+        this.$router.push({name: 'workspace', params: {configIndex: index}}).catch(err => {})
+      }
     }
   },
   data () {

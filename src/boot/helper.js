@@ -58,7 +58,32 @@ export default async ({ Vue, state }) => {
         }
         pointer = pointer[key];
       }
+    },
+    extractKeys(...translations) {
+      // console.log(translations);
+      let keys = [];
+      for (const translation of translations){
+        extract(translation, keys)
+      }
+      return keys;
     }
   }
   window.$helpers = helpers;
+  Vue.prototype.$helpers = helpers;
+}
+
+function exist (list, key) {
+  return list.map(k => k.join('.')).includes(key.join('.'))
+}
+
+function extract(object, list, parent = []) {
+  for (const key of Object.keys(object)) {
+    const newKey = parent.concat([key]);
+    if (!exist(list, newKey)) {
+      list.push(newKey);
+    }
+    if (typeof object[key] === 'object') {
+      extract(object[key], list, newKey)
+    }
+  }
 }

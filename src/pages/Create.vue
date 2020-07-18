@@ -53,7 +53,10 @@
       </div>
 
       <div>
-        <q-btn :disabled="foundFiles.length === 0" label="Submit" type="submit" color="primary"/>
+        <q-btn :disabled="foundFiles.length === 0"
+          :label="existingConfig != null ? `Update on ${existingConfig.projectName}` : 'Submit'"
+          type="submit"
+          :color="existingConfig != null ? 'warning': 'primary'"/>
         <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm"/>
       </div>
     </q-form>
@@ -74,6 +77,15 @@
         foundFiles: [],
         languageCodes: {},
         availableLanguages: ["ca","ar","fa","ps","en","sq","hy","pt","es","fr","ru","sm","de","nl","pap","sv","az","bs","hr","sr","bn","bg","ms","qu","gn","ay","dz","no","tn","be","sg","it","rm","rar","zh-hans","el","tr","cs","so","aa","da","et","ti","ast","eu","gl","am","om","fi","se","fo","ga","cy","gd","kw","ka","kl","ch","zh-hant","ht","hu","id","he","hi","ku","is","ja","sw","ky","km","ko","lo","si","ta","st","lt","lb","lv","zgh","ro","uk","srp","mg","mh","mk","my","mn","mt","mfe","ny","sf","pih","nb","nn","na","niu","mi","tpi","ho","tl","ur","pl","pau","sov","tox","sr-Latn","rw","crs","sl","sk","ss","th","tg","tkl","tet","tk","kaa","vi","bi","af","xh","zu","sn","nd"],
+      }
+    },
+    computed: {
+      configs() {
+        return this.$store.getters['translate/configs'];
+      },
+      existingConfig() {
+        let found = this.configs.filter(c => c.localePath == this.localePath);
+        return found.length > 0 ? found[0] : null;
       }
     },
     watch: {
@@ -127,8 +139,11 @@
             primaryLanguage: this.primaryLanguage,
             languageCodes: this.languageCodes
           });
+          this.$router.push({name: 'workspace', parmas: {configIndex: 0}});
         } else {
-          console.log('primaryLanguage : empty');
+          this.$q.notify({
+            message: 'Please select a primary langauge.',
+          });
         }
       }
     }

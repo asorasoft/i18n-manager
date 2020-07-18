@@ -7,6 +7,7 @@
     <q-item-section
       v-if="icon"
       avatar
+      :style="{minWidth: 0}"
     >
       <q-icon :name="icon"/>
     </q-item-section>

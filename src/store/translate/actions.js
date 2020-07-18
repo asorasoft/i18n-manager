@@ -18,7 +18,7 @@ export function saveConfig (
       }
     })
   } else {
-    configs.push(data);
+    configs.unshift(data);
   }
   saveConfigsToFile(context, configs);
 }
@@ -34,11 +34,8 @@ export function loadConfigsFromFile (context) {
 }
 
 export function saveConfigsToFile (context, configs) {
-  fs.writeFile(CONFIG_PATH, JSON.stringify(configs), function (err, data) {
-    if (err) {
-      alert(err)
-    }
-  })
+  fs.writeFileSync(CONFIG_PATH, JSON.stringify(configs));
+  context.dispatch('loadConfigs');
 }
 
 export function loadConfigs (context) {
