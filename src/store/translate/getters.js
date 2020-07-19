@@ -15,3 +15,14 @@ export function getTranslationFromKey(state) {
     return result;
   };
 }
+
+export function getKeyStatuses(state) {
+  // {value, isAvailable}
+  return (keys) => {
+    let result = {};
+    for (const key of Object.keys(state.translations)) {
+      result[key] = $helpers.getKeyStatus(state.translations[key], keys);
+    }
+    return result;
+  }
+}

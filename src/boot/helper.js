@@ -43,6 +43,38 @@ export default async ({ Vue, state }) => {
         }
       }
     },
+    getKeyStatus(obj, keys) {
+      keys = keys.split('.');
+      let pointer = obj;
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i]
+        if (key === '') {
+          return {
+            value: null,
+            isAvailable: false
+          };
+        }
+        if (i === keys.length - 1) {
+          return {
+            value: pointer[key],
+            isAvailable: pointer[key] === undefined,
+          };
+        }
+        if (!pointer.hasOwnProperty(key)) {
+          return {
+            value: null,
+            isAvailable: true,
+          };
+        } else if (typeof pointer[key] === 'string') {
+          return {
+            value: null,
+            isAvailable: false,
+          };
+        } else {
+          pointer = pointer[key];
+        }
+      }
+    },
     setProperties(obj, keys, value, force = false) {
       keys = keys.split('.');
       let pointer = obj;
