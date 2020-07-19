@@ -12,6 +12,8 @@
           filled
           autofocus
           ref="inputKey"
+          @keydown.ctrl.c="!$q.platform.is.mac ? onCopy() : null"
+          @keydown.meta.c="$q.platform.is.mac ? onCopy() : null"
           @keypress="onKeyPressed"
           @keydown.tab="onPressTab"
           @input="onInputKey"
@@ -21,8 +23,16 @@
         >
           <template v-slot:after>
             <div :style="{width: '80px'}">
-              <q-btn v-show="true" @click="onCopy" round dense flat icon="content_copy" />
-              <q-btn v-show="true" @click="translateAll" round dense flat icon="g_translate" />
+              <q-btn v-show="true" @click="onCopy" round dense flat icon="content_copy">
+                <q-tooltip>
+                  Copy current key ({{$q.platform.is.mac ? 'CMD' : 'Ctrl'}} + C)
+                </q-tooltip>
+              </q-btn>
+              <q-btn v-show="true" @click="translateAll" round dense flat icon="g_translate">
+                <q-tooltip>
+                  Auto translate all (ALT + Enter)
+                </q-tooltip>
+              </q-btn>
             </div>
           </template>
         </q-input>
