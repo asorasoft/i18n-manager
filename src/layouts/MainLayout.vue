@@ -57,7 +57,7 @@
 
           <q-popup-proxy context-menu>
             <q-list>
-              <q-item clickable>
+              <q-item @click="moveToTop(config)" clickable>
                 <q-item-section :style="{minWidth: '24px'}">
                   <q-icon name="vertical_align_top"/>
                 </q-item-section>
@@ -117,6 +117,19 @@ export default {
     }
   },
   methods: {
+    moveToTop(config) {
+      let activeConfig = null;
+      if (this.$route.name === 'workspace') {
+        activeConfig = this.configs[this.$route.params.configIndex];
+      }
+      this.configs = [config, ...this.configs.filter((c) => c !== config)];
+      if (activeConfig !== null) {
+        const updatedIndex = this.configs.indexOf(activeConfig).toString();
+        if (updatedIndex !== this.$route.params.configIndex) {
+          this.$router.push({name: 'workspace', params: {configIndex: updatedIndex}});
+        }
+      }
+    },
     showNotify () {
       this.$q.notify((this.$q.platform.is.desktop ? 'Clicked' : 'Tapped') + ' on a context menu item.')
     },
