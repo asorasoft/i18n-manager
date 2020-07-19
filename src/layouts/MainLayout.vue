@@ -75,12 +75,12 @@
                 </q-item-section>
               </q-item>
               <q-separator/>
-              <q-item clickable>
+              <q-item @click="showConfirmRemoveProject = true; deleteConfig = config" clickable>
                 <q-item-section class="text-red" :style="{minWidth: '24px'}">
                   <q-icon name="delete"/>
                 </q-item-section>
                 <q-item-section :style="{minWidth: '100px'}">
-                  Delete
+                  Remove
                 </q-item-section>
               </q-item>
             </q-list>
@@ -94,6 +94,20 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <q-dialog v-model="showConfirmRemoveProject" v-if="deleteConfig">
+      <q-card>
+        <q-card-section class="row items-center">
+          <q-avatar icon="delete" color="red" text-color="white"/>
+          <span class="q-ml-sm">Remove project <strong>{{deleteConfig.projectName}}</strong>. Are you sure?</span>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" v-close-popup/>
+          <q-btn flat label="Yes, sure." color="primary" @click="onRemoveProject" v-close-popup/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-layout>
 </template>
 
@@ -117,6 +131,16 @@ export default {
     }
   },
   methods: {
+    onRemoveProject() {
+      let removeCurrentProject = false;
+      if (this.$route.name === 'workspace' && this.configs[this.$route.params.configIndex] === this.deleteConfig) {
+        removeCurrentProject = true;
+      }
+      this.$store.commit('translate/removeConfig', this.deleteConfig);
+      if (removeCurrentProject) {
+        this.$router.push({name: 'create-project'});
+      }
+    },
     moveToTop(config) {
       let activeConfig = null;
       if (this.$route.name === 'workspace') {
@@ -134,7 +158,7 @@ export default {
       this.$q.notify((this.$q.platform.is.desktop ? 'Clicked' : 'Tapped') + ' on a context menu item.')
     },
     openWorkSpace(index) {
-      if (this.$route.name != 'workspace' || this.$route.params.configIndex != index) {
+      if (this.$route.name !== 'workspace' || this.$route.params.configIndex != index) {
         this.$router.push({name: 'workspace', params: {configIndex: index}}).catch(err => {})
       }
     },
@@ -144,6 +168,8 @@ export default {
   },
   data () {
     return {
+      deleteConfig: null,
+      showConfirmRemoveProject: false,
       leftDrawerOpen: false,
       essentialLinks: [
         {
