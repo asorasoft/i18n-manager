@@ -43,18 +43,18 @@
             height: '60px'
           }"
         >
-        <div ref="suggestionContainer" class="row no-wrap">
-          <q-chip
-            :color="index === suggestionIndex ? 'primary' : ''"
-            :text-color="index === suggestionIndex ? 'white' : ''"
-            clickable
-            @click="choosekey(suggestion)"
-            class="q-ma-sm"
-            v-for="(suggestion, index) in suggestionList"
-            :key="suggestion[suggestion.length -1]">
-            {{suggestion[suggestion.length -1]}}
-          </q-chip>
-        </div>
+          <div ref="suggestionContainer" class="row no-wrap">
+            <q-chip
+              :color="index === suggestionIndex ? 'primary' : ''"
+              :text-color="index === suggestionIndex ? 'white' : ''"
+              clickable
+              @click="choosekey(suggestion)"
+              class="q-ma-sm"
+              v-for="(suggestion, index) in suggestionList"
+              :key="suggestion[suggestion.length -1]">
+              {{suggestion[suggestion.length -1]}}
+            </q-chip>
+          </div>
         </q-scroll-area>
 
         <q-input type="textarea"
