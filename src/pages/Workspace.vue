@@ -13,7 +13,7 @@
           ref="inputKey"
           @keypress="onKeyPressed"
           @keydown.tab="onPressTab"
-          @input="updateFinalKey"
+          @input="onInputKey"
           @blur="updateFinalKey"
           v-model="displayKey"
           hint="Translation key"
@@ -43,7 +43,7 @@
         </div>
         </q-scroll-area>
 
-        <q-input v-for="file in translationFiles" :key="file" filled>
+        <q-input v-for="file in translationFiles" :key="file" filled v-model="translationModels[file]">
           <template v-slot:before>
             <span :style="{fontSize: '14px'}">{{file.split('.')[0].toUpperCase()}}</span>
           </template>
@@ -55,6 +55,7 @@
 
 <script>
 const fs = require('fs');
+const translate = require('@vitalets/google-translate-api');
 import { copyToClipboard, scroll } from 'quasar';
 
 export default {
@@ -65,6 +66,7 @@ export default {
       finalKey: '',
       suggestionIndex: null,
       suggestionList: [],
+      translationModels: {},
     };
   },
   computed: {
@@ -104,6 +106,14 @@ export default {
     onCopy () {
       copyToClipboard(this.finalKey);
     },
+    onInputKey() {
+      const selectionPosition = this.$refs.inputKey.$refs.input.selectionStart;
+      this.displayKey = this.displayKey.replace(/ /g, '_');
+      this.$nextTick(() => {
+        this.$refs.inputKey.$refs.input.setSelectionRange(selectionPosition, selectionPosition);
+      });
+      this.updateFinalKey();
+    },
     updateFinalKey () {
       this.finalKey = this.displayKey;
     },
@@ -119,7 +129,37 @@ export default {
         scroll.setHorizontalScrollPosition(target, offset, duration)
       }
     },
-    onKeyPressed(e) {
+    getTranslateSrc(fromKeyOnly = false) {
+      let translateSrc = this.$helpers.normalizeStringCase(this.finalKey.split('.').pop());
+      let fromLanguage = 'en';
+
+      if (!fromKeyOnly && !translateSrc) {
+        translateSrc = this.translationModels[this.config.primaryLanguage];
+        fromLanguage = this.config.languageCodes[this.config.primaryLanguage];
+      }
+
+      return {
+        text: translateSrc,
+        language: fromLanguage,
+      }
+    },
+    async translateToLanguage(src, fileName) {
+      const fromLanguage = src.language;
+      const toLanguage = this.getLanguageCode(fileName);
+      let result = null;
+
+      if (this.config.primaryLanguage === fileName && fromLanguage === toLanguage) {
+        result = {text: src.text}; // don't forget to correct grammar here
+      } else {
+        result = await translate(src.text, { from: fromLanguage, to: toLanguage, client: 'webapp' });
+      }
+      console.log(result);
+      return result != null ? result.text : '';
+    },
+    getLanguageCode (fileName) {
+      return this.config.languageCodes[fileName] || fileName.split('.')[0];
+    },
+    async onKeyPressed(e) {
       if (e.ctrlKey) {
         switch (e.key) {
           case 'u':
@@ -132,12 +172,29 @@ export default {
             }
             this.displayKey = key;
             break;
-          case 'a':
-            this.$refs.displayKey.setSelectionRange(0, 0);
-            break;
-          case 'e':
-            this.$refs.displayKey.setSelectionRange(this.displayKey.length, this.displayKey.length);
-            break;
+          // case 'a':
+          //   this.$refs.inputKey.$refs.input.setSelectionRange(0, 0);
+          //   break;
+          // case 'e':
+          //   this.$refs.inputKey.$refs.input.setSelectionRange(this.displayKey.length, this.displayKey.length);
+          //   break;
+        }
+      } else if (e.altKey) {
+        switch (e.key) {
+          case 'Enter':
+            this.finalKey = this.displayKey;
+            let src = this.getTranslateSrc(true);
+            if (src.text) {
+              try {
+                const translations = await Promise.all(this.translationFiles.map(fileName => this.translateToLanguage(src, fileName)));
+
+                for (let i = 0; i < this.translationFiles.length; i++) {
+                  this.$set(this.translationModels, this.translationFiles[i], translations[i]);
+                }
+              } catch (e) {
+                this.$q.notify(e.toString());
+              }
+            }
         }
       }
     },
@@ -184,6 +241,7 @@ export default {
       this.finalKey = '';
       this.suggestionIndex = null;
       this.suggestionList = [];
+      this.translationModels = {};
     },
   },
   watch: {

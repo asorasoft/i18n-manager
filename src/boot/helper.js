@@ -5,6 +5,14 @@ const fs = require('fs');
 // more info on params: https://quasar.dev/quasar-cli/cli-documentation/boot-files#Anatomy-of-a-boot-file
 export default async ({ Vue, state }) => {
   const helpers = {
+    normalizeStringCase(text) {
+      if (typeof text !== 'string') {
+        return text;
+      }
+      return text.replace(/[A-Z]|([ \-_]+[A-Za-z])/g, function(res) {
+          return ' ' + (res.replace(/[ \-_]+/g, '')).toLowerCase();
+      });
+    },
     getJsonFilesInFolder(path) {
       if (!fs.existsSync(path)) {
         return [];
