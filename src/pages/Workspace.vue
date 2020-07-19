@@ -5,7 +5,7 @@
         <div class="row" :style="{height: '25.72px'}">
           <div v-show="existingKeys.map(k => k.join('.')).includes(displayKey)">
             <q-btn @click="showConfirmDeleteModel = true" class="q-mr-sm" size="sm" color="red" icon="delete" label="delete"></q-btn>
-            <q-btn @click="onChangeKey" size="sm" color="warning" icon="edit" label="change key"></q-btn>
+            <q-btn @click="showChangeKeyModel = true" size="sm" color="warning" icon="edit" label="change key"></q-btn>
           </div>
         </div>
         <q-input
@@ -91,6 +91,23 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <q-dialog v-model="showChangeKeyModel">
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">Add new key</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-input dense autofocus @keyup.enter="showChangeKeyModel = false" />
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn flat label="Update" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -110,6 +127,7 @@ export default {
       translationModels: {},
       existingKeyValue: {},
       showConfirmDeleteModel: false,
+      showChangeKeyModel: false,
     };
   },
   computed: {
@@ -158,7 +176,9 @@ export default {
         }
       }
     },
-    onChangeKey() {},
+    onChangeKey() {
+
+    },
     getExistingValue(file) {
       try {
         return this.existingKeyValue[file];
@@ -300,7 +320,7 @@ export default {
       return this.$store.getters['translate/getTranslationFromKey'](key);
     },
     saveToKey(key, value, file, force = false) {
-      this.$store.commit('translate/updateTranslations', {
+      this.$store.commit('translate/addTranslations', {
         file: file, // 'en.json',
         keys: key, // 'alert.exchange_rate_is_created',
         value: value, // 'Hi my world',
