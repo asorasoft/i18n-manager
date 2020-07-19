@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page :key="$route.params.configIndex" padding>
     <div class="q-pa-md">
       <q-form class="q-gutter-md">
         <div class="row" :style="{height: '25.72px'}">
@@ -10,6 +10,7 @@
         </div>
         <q-input
           filled
+          autofocus
           ref="inputKey"
           @keypress="onKeyPressed"
           @keydown.tab="onPressTab"
@@ -19,7 +20,10 @@
           hint="Translation key"
         >
           <template v-slot:after>
-            <q-btn @click="onCopy" round dense flat icon="content_copy" />
+            <div :style="{width: '80px'}">
+              <q-btn v-show="true" @click="onCopy" round dense flat icon="content_copy" />
+              <q-btn v-show="true" @click="translateAll" round dense flat icon="g_translate" />
+            </div>
           </template>
         </q-input>
         <q-scroll-area
@@ -43,9 +47,17 @@
         </div>
         </q-scroll-area>
 
-        <q-input v-for="file in translationFiles" :key="file" filled v-model="translationModels[file]">
+        <q-input type="textarea" v-for="file in translationFiles" :key="file" filled v-model="translationModels[file]">
           <template v-slot:before>
-            <span :style="{fontSize: '14px'}">{{file.split('.')[0].toUpperCase()}}</span>
+            <div :style="{width: '50px'}">
+              <span :style="{fontSize: '14px'}">{{file.split('.')[0].toUpperCase()}}</span>
+            </div>
+          </template>
+          <template v-slot:after>
+            <div :style="{width: '80px'}">
+              <q-btn v-show="typeof getExistingValue(file) === 'string'" @click="onShowEdit(file)" round dense flat icon="edit" />
+              <q-btn round dense flat @click="translate(file)" icon="g_translate" />
+            </div>
           </template>
         </q-input>
       </q-form>
@@ -67,6 +79,7 @@ export default {
       suggestionIndex: null,
       suggestionList: [],
       translationModels: {},
+      existingKeyValue: {},
     };
   },
   computed: {
@@ -103,8 +116,19 @@ export default {
     },
   },
   methods: {
+    getExistingValue(file) {
+      try {
+        return this.existingKeyValue[file];
+      } catch (e) {
+        return null;
+      }
+    },
+    onShowEdit(file) {
+      this.$set(this.translationModels, file, this.existingKeyValue[file]);
+    },
     onCopy () {
       copyToClipboard(this.finalKey);
+      this.$q.notify(`Copied '${this.finalKey}'`);
     },
     onInputKey() {
       const selectionPosition = this.$refs.inputKey.$refs.input.selectionStart;
@@ -172,29 +196,34 @@ export default {
             }
             this.displayKey = key;
             break;
-          // case 'a':
-          //   this.$refs.inputKey.$refs.input.setSelectionRange(0, 0);
-          //   break;
-          // case 'e':
-          //   this.$refs.inputKey.$refs.input.setSelectionRange(this.displayKey.length, this.displayKey.length);
-          //   break;
         }
       } else if (e.altKey) {
         switch (e.key) {
           case 'Enter':
-            this.finalKey = this.displayKey;
-            let src = this.getTranslateSrc(true);
-            if (src.text) {
-              try {
-                const translations = await Promise.all(this.translationFiles.map(fileName => this.translateToLanguage(src, fileName)));
+            this.translateAll();
+            break;
+        }
+      }
+    },
+    async translate (file) {
+      try {
+        this.$set(this.translationModels, file, await this.translateToLanguage(this.getTranslateSrc(), file));
+      } catch (e) {
+        this.$q.notify(e.toString());
+      }
+    },
+    async translateAll() {
+      this.finalKey = this.displayKey;
+      let src = this.getTranslateSrc(true);
+      if (src.text) {
+        try {
+          const translations = await Promise.all(this.translationFiles.map(fileName => this.translateToLanguage(src, fileName)));
 
-                for (let i = 0; i < this.translationFiles.length; i++) {
-                  this.$set(this.translationModels, this.translationFiles[i], translations[i]);
-                }
-              } catch (e) {
-                this.$q.notify(e.toString());
-              }
-            }
+          for (let i = 0; i < this.translationFiles.length; i++) {
+            this.$set(this.translationModels, this.translationFiles[i], translations[i]);
+          }
+        } catch (e) {
+          this.$q.notify(e.toString());
         }
       }
     },
@@ -245,6 +274,9 @@ export default {
     },
   },
   watch: {
+    displayKey() {
+      this.existingKeyValue = this.$store.getters['translate/getTranslationFromKey'](this.displayKey);
+    },
     finalKey() {
       this.displayKey = this.finalKey;
       this.suggestionIndex = null;
