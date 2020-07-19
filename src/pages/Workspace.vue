@@ -4,8 +4,8 @@
       <q-form class="q-gutter-md">
         <div class="row" :style="{height: '25.72px'}">
           <div v-show="existingKeys.map(k => k.join('.')).includes(displayKey)">
-            <q-btn class="q-mr-sm" size="sm" color="red" icon="delete" label="delete"></q-btn>
-            <q-btn size="sm" color="warning" icon="edit" label="change key"></q-btn>
+            <q-btn @click="showConfirmDeleteModel = true" class="q-mr-sm" size="sm" color="red" icon="delete" label="delete"></q-btn>
+            <q-btn @click="onChangeKey" size="sm" color="warning" icon="edit" label="change key"></q-btn>
           </div>
         </div>
         <q-input
@@ -57,7 +57,13 @@
         </div>
         </q-scroll-area>
 
-        <q-input type="textarea" v-for="file in translationFiles" :key="file" filled v-model="translationModels[file]">
+        <q-input type="textarea"
+          v-for="file in translationFiles"
+          :key="file"
+          filled
+          v-model="translationModels[file]"
+          :hint="typeof existingKeyValue[file] === 'string' ? existingKeyValue[file] : ''"
+        >
           <template v-slot:before>
             <div :style="{width: '50px'}">
               <span :style="{fontSize: '14px'}">{{file.split('.')[0].toUpperCase()}}</span>
@@ -72,6 +78,19 @@
         </q-input>
       </q-form>
     </div>
+    <q-dialog v-model="showConfirmDeleteModel">
+      <q-card>
+        <q-card-section class="row items-center">
+          <q-avatar icon="delete" color="red" text-color="white" />
+          <span class="q-ml-sm">Delete key <strong>{{displayKey}}</strong>. Are you sure?</span>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn flat label="Yes, sure." color="primary" @click="onDeleteKey" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -90,6 +109,7 @@ export default {
       suggestionList: [],
       translationModels: {},
       existingKeyValue: {},
+      showConfirmDeleteModel: false,
     };
   },
   computed: {
@@ -126,6 +146,19 @@ export default {
     },
   },
   methods: {
+    onDeleteKey() {
+      for (const file of this.translationFiles) {
+        try {
+          this.$store.commit('translate/deleteTranslationKey', {
+            file: file, // 'en.json',
+            keys: this.displayKey, // 'alert.exchange_rate_is_created',
+          });
+        } catch (e) {
+          this.$q.notify(e.toString());
+        }
+      }
+    },
+    onChangeKey() {},
     getExistingValue(file) {
       try {
         return this.existingKeyValue[file];

@@ -58,7 +58,11 @@ export default async ({ Vue, state }) => {
               throw new Error(`Key ${key} is already exist as an object key`)
             }
           }
-          pointer[key] = value;
+          if (value === null) {
+            delete pointer[key];
+          } else {
+            pointer[key] = value;
+          }
           break;
         }
 
