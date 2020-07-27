@@ -136,7 +136,7 @@
 
 <script>
   const fs = require('fs');
-  const translate = require('@vitalets/google-translate-api');
+  const translate = require('google-translate-open-api');
   import {copyToClipboard, scroll} from 'quasar';
 
   export default {
@@ -303,12 +303,16 @@
         let result = null;
 
         if (this.config.primaryLanguage === fileName && fromLanguage === toLanguage) {
-          result = {text: src.text}; // don't forget to correct grammar here
+          result = src.text; // don't forget to correct grammar here
         } else {
-          result = await translate(src.text, {from: fromLanguage, to: toLanguage, client: 'webapp'});
+          result  = (await translate(src.text, {
+            tld: 'com',
+            from: fromLanguage,
+            to: toLanguage,
+          })).data[0];
         }
         console.log(result);
-        return result != null ? result.text : '';
+        return result != null ? result : '';
       },
       getLanguageCode(fileName) {
         return this.config.languageCodes[fileName] || fileName.split('.')[0];
