@@ -298,21 +298,27 @@
         }
       },
       async translateToLanguage(src, fileName) {
-        const fromLanguage = src.language;
-        const toLanguage = this.getLanguageCode(fileName);
-        let result = null;
+        try {
+          const fromLanguage = src.language;
+          const toLanguage = this.getLanguageCode(fileName);
+          let result = null;
 
-        if (this.config.primaryLanguage === fileName && fromLanguage === toLanguage) {
-          result = src.text; // don't forget to correct grammar here
-        } else {
-          result  = (await translate(src.text, {
-            tld: 'com',
-            from: fromLanguage,
-            to: toLanguage,
-          })).data[0];
+          if (this.config.primaryLanguage === fileName && fromLanguage === toLanguage) {
+            result = src.text; // don't forget to correct grammar here
+          } else {
+            result  = (await translate.default(src.text, {
+              tld: 'com',
+              from: fromLanguage,
+              to: toLanguage,
+              browers: true,
+              'Access-Control-Allow-Origin': '*',
+            })).data;
+          }
+          return result != null ? result : '';
+        } catch (e) {
+          this.$q.notify(e);
+          return '';
         }
-        console.log(result);
-        return result != null ? result : '';
       },
       getLanguageCode(fileName) {
         return this.config.languageCodes[fileName] || fileName.split('.')[0];
