@@ -45,6 +45,12 @@ export default async ({ Vue, state }) => {
     },
     getKeyStatus(obj, keys) {
       keys = keys.split('.');
+      if (keys.length > 0 && keys.includes('')) {
+        return  {
+          value: null,
+          isAvailable: false
+        }
+      }
       let pointer = obj;
       for (let i = 0; i < keys.length; i++) {
         const key = keys[i]

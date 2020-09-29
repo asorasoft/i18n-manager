@@ -10,12 +10,18 @@
                    icon="edit" label="change key"></q-btn>
           </div>
           <div class="absolute-right">
-            <q-btn size="sm" color="primary" icon="save" label="Save" @click="save"></q-btn>
+            <q-btn :disable="currentKeyStatus.disabled"
+                   size="sm"
+                   :color="currentKeyStatus.color"
+                   :icon="currentKeyStatus.icon"
+                   :label="currentKeyStatus.label"
+                   @click="currentKeyStatus.onClick"></q-btn>
           </div>
         </div>
         <q-input
           filled
           autofocus
+          placeholder="For example: button.click"
           ref="inputKey"
           @keydown.ctrl.c="!$q.platform.is.mac ? onCopy() : null"
           @keydown.meta.c="$q.platform.is.mac ? onCopy() : null"
@@ -59,7 +65,7 @@
               :color="index === suggestionIndex ? 'primary' : ''"
               :text-color="index === suggestionIndex ? 'white' : ''"
               clickable
-              @click="choosekey(suggestion)"
+              @click="chooseKey(suggestion)"
               class="q-ma-sm"
               v-for="(suggestion, index) in suggestionList"
               :key="suggestion[suggestion.length -1]">
@@ -71,6 +77,7 @@
         <q-input type="textarea"
                  rows="3"
                  v-for="file in translationFiles"
+                 placeholder=""
                  :key="file"
                  filled
                  v-model="translationModels[file]"
@@ -83,7 +90,7 @@
                   :style="{fontSize: '14px'}">{{ file.split('.')[0].toUpperCase() }} ({{ getLanguageCode(file) }})</span>
               </div>
               <div>
-                <span :class="['text-green', 'text-orange','text-red'][getStatusText(keyStatuses[file]).code]"
+                <span :class="['text-green', 'text-orange', 'text-red', 'text-red', 'text-red'][getStatusText(keyStatuses[file]).code]"
                       :style="{fontSize: '12px'}"
                 >
                   {{ getStatusText(keyStatuses[file]).text }}
@@ -122,7 +129,7 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-input dense autofocus v-model="newKeyChangeModel" @keyup.enter="onChangeKey"/>
+          <q-input placeholder="eg: btn.click" dense autofocus v-model="newKeyChangeModel" @keyup.enter="onChangeKey"/>
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
@@ -156,6 +163,37 @@ export default {
     };
   },
   computed: {
+    currentKeyStatus() {
+      let data = {
+        disabled: false,
+        onClick: () => {
+          this.save()
+        },
+        color: 'primary',
+        label: 'save',
+        icon: 'save'
+      }
+      const statuses = Object.values(this.keyStatuses).map(status => this.getStatusText(status))
+      if (statuses.some(status => [3, 4].includes(status.code))) {
+        data.disabled = true
+      } else if (statuses.some(status => [1, 2].includes(status.code))) {
+        Object.assign(data, {
+          color: 'warning',
+          label: 'overwrite',
+          onClick: () => {
+            this.$q.dialog({
+              title: 'Overwrite key',
+              message: `Are you sure to overwrite on key "${this.displayKey}"?`,
+              cancel: true,
+              persistent: true
+            }).onOk(() => {
+              this.save(true)
+            })
+          },
+        })
+      }
+      return data
+    },
     isSnakeCase() {
       return this.displayKey.indexOf('_') > -1;
     },
@@ -200,7 +238,7 @@ export default {
     getStatusText(keyStatus) { // 0: new key, 1: old keu, 2: unavailable
       if (!keyStatus) {
         return {
-          code: 2,
+          code: 4,
           text: ''
         };
       }
@@ -211,7 +249,7 @@ export default {
         };
       } else if (keyStatus.value === null) {
         return {
-          code: 2,
+          code: 3,
           text: 'Unavailable'
         };
       } else if (typeof keyStatus.value === 'string') {
@@ -226,7 +264,7 @@ export default {
         };
       } else {
         return {
-          code: 2,
+          code: 4,
           text: 'Unknown status'
         };
       }
@@ -243,12 +281,13 @@ export default {
           this.$q.notify(e.toString());
         }
       }
+      this.updateKeyChecker()
     },
     onChangeKey() {
       let isAvailable = (() => {
         for (const file of this.translationFiles) {
           const statuses = this.$store.getters['translate/getKeyStatuses'](this.newKeyChangeModel)
-          if (this.getStatusText(statuses[file]).code !== 0) {
+          if ([1, 2].includes(this.getStatusText(statuses[file]).code)) {
             this.$q.notify(`The new key ${this.newKeyChangeModel} is already exist.`);
             return false
           }
@@ -268,6 +307,7 @@ export default {
         }
         this.showChangeKeyModel = false
       }
+      this.updateKeyChecker()
     },
     getExistingValue(file) {
       try {
@@ -294,7 +334,7 @@ export default {
     updateFinalKey() {
       this.finalKey = this.displayKey;
     },
-    choosekey(keySequence) {
+    chooseKey(keySequence) {
       this.finalKey = keySequence.join('.');
       this.$refs.inputKey.focus();
     },
@@ -310,7 +350,7 @@ export default {
       let translateSrc = this.$helpers.normalizeStringCase(this.finalKey.split('.').pop());
       let fromLanguage = 'en';
 
-      if (!fromKeyOnly) {
+      if (!fromKeyOnly && this.translationModels[this.config.primaryLanguage]) {
         translateSrc = this.translationModels[this.config.primaryLanguage];
         fromLanguage = this.config.languageCodes[this.config.primaryLanguage];
       }
@@ -377,14 +417,17 @@ export default {
           for (let i = 0; i < this.translationFiles.length; i++) {
             this.$set(this.translationModels, this.translationFiles[i], translations[i]);
           }
+
         } catch (e) {
-          this.$q.notify(e.toString());
+          this.$q.notify({
+            icon: 'error',
+            message: e.toString()
+          });
         }
       }
     },
     onPressTab(e) {
       e.preventDefault();
-      console.log(this.existingKeys())
       this.suggestionList = this.existingKeys().filter(k => {
         const joinedKey = k.join('.');
         return joinedKey.startsWith(this.finalKey) && joinedKey.substr(this.finalKey.length).indexOf('.') < 0;
@@ -423,9 +466,22 @@ export default {
         force: force,
       });
     },
-    save() {
-      for (let file of this.translationFiles) {
-        this.saveToKey(this.finalKey, this.translationModels[file], file)
+    save(force = false) {
+      try {
+        for (let file of this.translationFiles) {
+          this.saveToKey(this.finalKey, this.translationModels[file], file, force)
+        }
+
+        this.updateKeyChecker()
+
+        this.$q.notify({
+          position: 'top-right',
+          color: 'positive',
+          message: `Added key "${this.displayKey}" successfully.`,
+          duration: 500
+        });
+      } catch (e) {
+        this.$q.notify(e.toString())
       }
     },
     updateWorkspace() {
@@ -436,11 +492,14 @@ export default {
       this.suggestionList = [];
       this.translationModels = {};
     },
+    updateKeyChecker() {
+      this.existingKeyValue = this.$store.getters['translate/getTranslationFromKey'](this.displayKey);
+      this.keyStatuses = this.$store.getters['translate/getKeyStatuses'](this.displayKey);
+    }
   },
   watch: {
     displayKey() {
-      this.existingKeyValue = this.$store.getters['translate/getTranslationFromKey'](this.displayKey);
-      this.keyStatuses = this.$store.getters['translate/getKeyStatuses'](this.displayKey);
+      this.updateKeyChecker()
     },
     finalKey() {
       this.displayKey = this.finalKey;

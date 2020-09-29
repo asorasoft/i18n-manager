@@ -42,7 +42,7 @@
         <q-item
           clickable
           v-for="(config, index) in configs"
-          :active="$route.name === 'workspace' && index.toString() === $route.params.configIndex"
+          :active="$route.name === 'workspace' && index.toString() === $route.params.configIndex.toString()"
           :key="config.localePath"
           @click="openWorkSpace(index)"
         >
