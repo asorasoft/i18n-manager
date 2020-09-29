@@ -1,0 +1,12 @@
+{
+  "label": {
+    "hello": "Merhaba"
+  },
+  "paragraph": {
+    "agreement": "Bu, kullanıcının hizmet şartlarımızı nasıl kabul ettiğine dair çok büyük bir sözleşme metni paragrafıdır."
+  },
+  "btn": {
+    "cancel": "iptal etmek",
+    "okay": "Tamam"
+  }
+}

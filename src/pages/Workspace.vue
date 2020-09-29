@@ -106,7 +106,7 @@
           </template>
         </q-input>
       </q-form>
-<!--      <q-btn size="sm" color="primary" icon="add" label="New language"></q-btn>-->
+      <q-btn size="sm" color="primary" icon="add" label="New language" @click="addNewLanguage"></q-btn>
     </div>
     <q-dialog v-model="showConfirmDeleteModel">
       <q-card>
@@ -150,6 +150,7 @@ export default {
   name: 'Workspace',
   data() {
     return {
+      translationFilesComputeCounter: 0,
       displayKey: '',
       finalKey: '',
       suggestionIndex: null,
@@ -198,6 +199,7 @@ export default {
       return this.displayKey.indexOf('_') > -1;
     },
     translationFiles() {
+      this.translationFilesComputeCounter;
       return this.$helpers.getJsonFilesInFolder(this.config.localePath).sort((a, b) => {
         if (a === this.config.primaryLanguage) {
           return -1;
@@ -224,6 +226,82 @@ export default {
     },
   },
   methods: {
+    addNewLanguage() {
+      this.$q.dialog({
+        title: 'New translation',
+        message: 'New locale code:',
+        prompt: {
+          model: '',
+          type: 'text' // optional
+        },
+        cancel: true,
+        persistent: false
+      }).onOk(data => {
+        const existingFiles = this.translationFiles.map(file => this.getLanguageCode(file))
+        if (existingFiles.includes(data)) {
+          this.$q.notify({
+            icon: 'error',
+            message: `${$helpers.getNativeLanguage(data)} already exists`
+          })
+        } else if (!(/^[a-zA-Z\-]+$/g.test(data))) {
+          this.$q.notify({
+            icon: 'error',
+            message: 'Invalid locale code'
+          })
+        }
+        this.generateNewLanguageFile(data)
+      })
+    },
+    async generateNewLanguageFile(localeCode) {
+      const dialog = this.$q.dialog({
+        title: 'Generating...',
+        dark: true,
+        progress: {
+          spinner: QSpinnerGears,
+          color: 'amber'
+        },
+        persistent: true,
+        ok: false
+      })
+
+      const baseTranslation = this.translations[this.config.primaryLanguage]
+      const baseLanguage = this.getLanguageCode(this.config.primaryLanguage)
+      let canTranslate = true
+      try {
+        await translate('', {to: localeCode, client: 'webapp'})
+      } catch (e) {
+        canTranslate = false
+      }
+
+      let newTranslation = JSON.parse(JSON.stringify(baseTranslation))
+
+      if (canTranslate) {
+        // dialog.update({
+        //   title: 'Translating...'
+        // })
+        let pendingTasks = []
+        function translateObjectString(obj) {
+          for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+              if (typeof(obj[key]) === 'string') {
+                pendingTasks.push(((pointer, key) => async () => {
+                  let result = (await translate(pointer[key], {from: baseLanguage, to: localeCode, client: 'webapp'}))
+                  pointer[key] = result.text
+                })(obj, key))
+              } else if (typeof(obj[key]) === 'object') {
+                translateObjectString(obj[key])
+              }
+            }
+          }
+        }
+        translateObjectString(newTranslation)
+        await Promise.all(pendingTasks.map(task => task()))
+      }
+      fs.writeFileSync(this.config.localePath + '/' + localeCode + '.json', JSON.stringify(newTranslation, null, 2))
+      await this.$store.dispatch('translate/loadTranslation', this.$route.params.configIndex);
+      this.translationFilesComputeCounter++;
+      dialog.hide()
+    },
     existingKeys() {
       return $helpers.extractKeys(...Object.values(this.translations));
     },
@@ -278,7 +356,10 @@ export default {
             config: this.config
           });
         } catch (e) {
-          this.$q.notify(e.toString());
+          this.$q.notify({
+            icon: 'error',
+            message: e.toString()
+          });
         }
       }
       this.updateKeyChecker()
@@ -288,11 +369,17 @@ export default {
         for (const file of this.translationFiles) {
           const statuses = this.$store.getters['translate/getKeyStatuses'](this.newKeyChangeModel)
           if ([1, 2].includes(this.getStatusText(statuses[file]).code)) {
-            this.$q.notify(`The new key ${this.newKeyChangeModel} is already exist.`);
+            this.$q.notify({
+              icon: 'error',
+              message: `The new key ${this.newKeyChangeModel} is already exist.`
+            });
             return false
           }
           else if (this.getStatusText(statuses[file]).code !== 0) {
-            this.$q.notify(`The new key ${this.newKeyChangeModel} is not invalid.`);
+            this.$q.notify({
+              icon: 'error',
+              message: `The new key ${this.newKeyChangeModel} is not invalid.`
+            });
             return false
           }
         }
@@ -404,7 +491,10 @@ export default {
       try {
         this.$set(this.translationModels, file, await this.translateToLanguage(this.getTranslateSrc(), file));
       } catch (e) {
-        this.$q.notify(e.toString());
+        this.$q.notify({
+          icon: 'error',
+          message: e.toString()
+        });
       }
     },
     async translateAll() {
@@ -494,7 +584,10 @@ export default {
           duration: 500
         });
       } catch (e) {
-        this.$q.notify(e.toString())
+        this.$q.notify({
+          icon: 'error',
+          message: e.toString()
+        })
       }
     },
     updateWorkspace() {
