@@ -2,7 +2,7 @@
   <q-page :key="$route.params.configIndex" padding>
     <div class="q-pa-md">
       <q-form class="q-gutter-md">
-        <div class="row" :style="{height: '25.72px'}">
+        <div class="row" :style="{height: '25.72px', marginBottom: '30px'}">
           <div v-show="existingKeys().map(k => k.join('.')).includes(displayKey)">
             <q-btn @click="showConfirmDeleteModel = true" class="q-mr-sm" size="sm" color="red" icon="delete"
                    label="delete"></q-btn>
@@ -11,7 +11,6 @@
           </div>
           <div class="absolute-right">
             <q-btn :disable="currentKeyStatus.disabled"
-                   size="sm"
                    :color="currentKeyStatus.color"
                    :icon="currentKeyStatus.icon"
                    :label="currentKeyStatus.label"
@@ -77,7 +76,7 @@
         <q-input type="textarea"
                  rows="3"
                  v-for="file in translationFiles"
-                 placeholder=""
+                 :placeholder="$helpers.getNativeLanguage(getLanguageCode(file))"
                  :key="file"
                  filled
                  v-model="translationModels[file]"
@@ -107,6 +106,7 @@
           </template>
         </q-input>
       </q-form>
+<!--      <q-btn size="sm" color="primary" icon="add" label="New language"></q-btn>-->
     </div>
     <q-dialog v-model="showConfirmDeleteModel">
       <q-card>
@@ -144,7 +144,7 @@
 <script>
 const fs = require('fs');
 const translate = require('@k3rn31p4nic/google-translate-api');
-import {copyToClipboard, scroll} from 'quasar';
+import {copyToClipboard, scroll, QSpinnerGears} from 'quasar';
 
 export default {
   name: 'Workspace',
@@ -411,14 +411,27 @@ export default {
       this.finalKey = this.displayKey;
       let src = this.getTranslateSrc(true);
       if (src.text) {
+        const dialog = this.$q.dialog({
+          title: 'Translating...',
+          dark: true,
+          progress: {
+            spinner: QSpinnerGears,
+            color: 'amber'
+          },
+          persistent: true,
+          ok: false
+        })
+
         try {
           const translations = await Promise.all(this.translationFiles.map(fileName => this.translateToLanguage(src, fileName)));
 
           for (let i = 0; i < this.translationFiles.length; i++) {
             this.$set(this.translationModels, this.translationFiles[i], translations[i]);
           }
+          dialog.hide()
 
         } catch (e) {
+          dialog.hide()
           this.$q.notify({
             icon: 'error',
             message: e.toString()

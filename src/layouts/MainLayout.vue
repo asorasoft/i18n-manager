@@ -161,6 +161,7 @@ export default {
           this.$router.push({name: 'workspace', params: {configIndex: updatedIndex}});
         }
       }
+      this.$store.dispatch('translate/saveConfigsToFile', this.configs)
     },
     showNotify () {
       this.$q.notify((this.$q.platform.is.desktop ? 'Clicked' : 'Tapped') + ' on a context menu item.')

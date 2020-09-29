@@ -1,10 +1,19 @@
 // import something here
 const fs = require('fs');
+const languages = require('../utils/languages.json')
 
 // "async" is optional;
 // more info on params: https://quasar.dev/quasar-cli/cli-documentation/boot-files#Anatomy-of-a-boot-file
 export default async ({ Vue, state }) => {
   const helpers = {
+    getNativeLanguage(localeCode) {
+      for (const language of languages) {
+        if (language['639-1'].toLowerCase() === localeCode.toLowerCase().split('-')[0]) {
+          return language['Native name (endonym)'].split(',')[0].split('(')[0].trim()
+        }
+      }
+      return `Language of ${localeCode}`
+    },
     normalizeStringCase(text) {
       if (typeof text !== 'string') {
         return text;
