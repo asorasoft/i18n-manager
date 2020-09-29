@@ -1,0 +1,9 @@
+{
+  "label": {
+    "hello": "hello"
+  },
+  "paragraph": {
+    "agreement": "This is a very large agreement text paragraph on how user agree our terms of service."
+  },
+  "button": {}
+}

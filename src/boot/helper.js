@@ -117,6 +117,9 @@ export default async ({ Vue, state }) => {
         extract(translation, keys)
       }
       return keys;
+    },
+    writeJson(path, obj) {
+      fs.writeFileSync(path, JSON.stringify(obj, null, 2))
     }
   }
   window.$helpers = helpers;

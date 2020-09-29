@@ -15,6 +15,7 @@
           {{$route.name === 'workspace' ? configs[$route.params.configIndex].projectName : 'Asora – Translator'}}
         </q-toolbar-title>
 
+        <q-btn @click="onEditConfig($route.params.configIndex)" icon="settings" round dense flat></q-btn>
       </q-toolbar>
     </q-header>
 
@@ -41,7 +42,7 @@
         <q-item
           clickable
           v-for="(config, index) in configs"
-          :active="$route.name == 'workspace' && index.toString() == $route.params.configIndex"
+          :active="$route.name === 'workspace' && index.toString() === $route.params.configIndex"
           :key="config.localePath"
           @click="openWorkSpace(index)"
         >
@@ -57,7 +58,7 @@
 
           <q-popup-proxy context-menu>
             <q-list>
-              <q-item @click="moveToTop(config)" clickable>
+              <q-item @click="moveToTop(config)" clickable v-close-popup>
                 <q-item-section :style="{minWidth: '24px'}">
                   <q-icon name="vertical_align_top"/>
                 </q-item-section>
@@ -66,7 +67,7 @@
                 </q-item-section>
               </q-item>
               <q-separator/>
-              <q-item clickable>
+              <q-item @click="onEditConfig(index)" clickable v-close-popup>
                 <q-item-section :style="{minWidth: '24px'}">
                   <q-icon name="settings"/>
                 </q-item-section>
@@ -75,7 +76,7 @@
                 </q-item-section>
               </q-item>
               <q-separator/>
-              <q-item @click="showConfirmRemoveProject = true; deleteConfig = config" clickable>
+              <q-item @click="showConfirmRemoveProject = true; deleteConfig = config" clickable v-close-popup>
                 <q-item-section class="text-red" :style="{minWidth: '24px'}">
                   <q-icon name="delete"/>
                 </q-item-section>
@@ -131,6 +132,13 @@ export default {
     }
   },
   methods: {
+    onEditConfig(configIndex) {
+      try {
+        this.$router.push({name: 'edit-config', params: {configIndex: configIndex}})
+      } catch (e) {
+        this.$router.replace({name: 'edit-config', params: {configIndex: configIndex}, query: {try: '1'}})
+      }
+    },
     onRemoveProject() {
       let removeCurrentProject = false;
       if (this.$route.name === 'workspace' && this.configs[this.$route.params.configIndex] === this.deleteConfig) {
