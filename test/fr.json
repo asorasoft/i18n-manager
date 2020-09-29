@@ -7,6 +7,7 @@
   },
   "btn": {
     "cancel": "Annuler",
-    "okay": "d'accord"
+    "okay": "d'accord",
+    "click_to_remove_all_users": "cliquez pour supprimer tous les utilisateurs"
   }
 }

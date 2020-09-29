@@ -7,6 +7,7 @@
   },
   "btn": {
     "cancel": "hủy bỏ",
-    "okay": "Được chứ"
+    "okay": "Được chứ",
+    "click_to_remove_all_users": "nhấp để xóa tất cả người dùng"
   }
 }

@@ -7,6 +7,7 @@
   },
   "btn": {
     "cancel": "cancel",
-    "okay": "okay"
+    "okay": "okay",
+    "click_to_remove_all_users": "click to remove all users"
   }
 }

@@ -512,6 +512,7 @@ export default {
           ok: false
         })
 
+        // Error not caught properly, when one promise error, all down
         try {
           const translations = await Promise.all(this.translationFiles.map(fileName => this.translateToLanguage(src, fileName)));
 

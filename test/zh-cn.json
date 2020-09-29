@@ -7,6 +7,7 @@
   },
   "btn": {
     "cancel": "取消",
-    "okay": "好的"
+    "okay": "好的",
+    "click_to_remove_all_users": "单击以删除所有用户"
   }
 }
