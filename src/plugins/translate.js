@@ -1,5 +1,5 @@
 const translatePlugin = require("@k3rn31p4nic/google-translate-api");
-const tunnel = require('tunnel');
+// const tunnel = require('tunnel');
 
 let translate = (phrase, option) => {
   // return (async () => ({
