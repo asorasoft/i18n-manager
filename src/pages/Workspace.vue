@@ -430,6 +430,6 @@
     },
     created() {
       this.updateWorkspace();
-    }
+    },
   }
 </script>
