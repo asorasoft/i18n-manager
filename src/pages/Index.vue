@@ -1,14 +1,16 @@
 <template>
-  <q-page class="flex flex-center">
-    <img
-      alt="Quasar logo"
-      src="~assets/quasar-logo-full.svg"
-    >
-  </q-page>
+  <div class="flex justify-center">
+    <drawer-list style="margin-top: 50px"></drawer-list>
+  </div>
 </template>
 
 <script>
+import DrawerList from "components/DrawerList";
+
 export default {
-  name: 'PageIndex'
+  name: 'PageIndex',
+  components: {
+    DrawerList
+  }
 }
 </script>

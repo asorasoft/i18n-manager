@@ -66,6 +66,7 @@
 <script>
   const fs = require('fs');
   const electron = require('electron')
+  import translate from "../plugins/translate.js";
 
   export default {
     name: 'PageCreate',
@@ -76,7 +77,6 @@
         primaryLanguage: '',
         foundFiles: [],
         languageCodes: {},
-        availableLanguages: ["ca","ar","fa","ps","en","sq","hy","pt","es","fr","ru","sm","de","nl","pap","sv","az","bs","hr","sr","bn","bg","ms","qu","gn","ay","dz","no","tn","be","sg","it","rm","rar","zh-hans","el","tr","cs","so","aa","da","et","ti","ast","eu","gl","am","om","fi","se","fo","ga","cy","gd","kw","ka","kl","ch","zh-hant","ht","hu","id","he","hi","ku","is","ja","sw","ky","km","ko","lo","si","ta","st","lt","lb","lv","zgh","ro","uk","srp","mg","mh","mk","my","mn","mt","mfe","ny","sf","pih","nb","nn","na","niu","mi","tpi","ho","tl","ur","pl","pau","sov","tox","sr-Latn","rw","crs","sl","sk","ss","th","tg","tkl","tet","tk","kaa","vi","bi","af","xh","zu","sn","nd"],
       }
     },
     computed: {
@@ -84,20 +84,44 @@
         return this.$store.getters['translate/configs'];
       },
       existingConfig() {
-        let found = this.configs.filter(c => c.localePath == this.localePath);
+        let found = this.configs.filter(c => c.localePath === this.localePath);
         return found.length > 0 ? found[0] : null;
       }
     },
     watch: {
       foundFiles() {
-        this.languageCodes = {};
-        this.foundFiles.forEach((file) => {
-          const lang = file.split('.')[0].toLowerCase();
-          this.$set(this.languageCodes, file, this.availableLanguages.includes(lang) ? lang : '');
-        });
+        if (this.$route.name === 'create-project') {
+          this.languageCodes = {};
+          this.foundFiles.forEach((file) => {
+            const lang = file.split('.')[0].toLowerCase();
+            this.$set(this.languageCodes, file, translate.languages.isSupported(lang) ? lang : '');
+          });
+        }
+      },
+      '$route'() {
+        this.onRouteUpdate()
       }
     },
+    created() {
+      this.onRouteUpdate()
+    },
     methods: {
+      onRouteUpdate() {
+        if (this.$route.name === 'create-project') {
+          this.projectName = ''
+          this.localePath = ''
+          this.primaryLanguage = ''
+          this.foundFiles = []
+          this.languageCodes = {}
+        } else if (this.$route.name === 'edit-config') {
+          const configData = this.configs[this.$route.params.configIndex]
+          this.projectName = configData.projectName
+          this.localePath = configData.localePath
+          this.primaryLanguage = configData.primaryLanguage
+          this.foundFiles = Object.keys(configData.languageCodes)
+          this.languageCodes = configData.languageCodes
+        }
+      },
       async pickFolder() {
         const result = await electron.remote.dialog.showOpenDialog({
           properties: ['openDirectory']
@@ -139,13 +163,13 @@
             primaryLanguage: this.primaryLanguage,
             languageCodes: this.languageCodes
           });
-          this.$router.push({name: 'workspace', parmas: {configIndex: 0}});
+          this.$router.push({name: 'workspace', params: {configIndex: '0'}});
         } else {
           this.$q.notify({
             message: 'Please select a primary langauge.',
           });
         }
       }
-    }
+    },
   }
 </script>

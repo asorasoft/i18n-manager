@@ -1,10 +1,18 @@
 // import something here
+
 const fs = require('fs');
+import translate from "../plugins/translate.js";
 
 // "async" is optional;
 // more info on params: https://quasar.dev/quasar-cli/cli-documentation/boot-files#Anatomy-of-a-boot-file
 export default async ({ Vue, state }) => {
   const helpers = {
+    getNativeLanguage(localeCode) {
+      if (translate.languages.isSupported(localeCode)) {
+        return translate.languages[localeCode]
+      }
+      return `Language of ${localeCode}`
+    },
     normalizeStringCase(text) {
       if (typeof text !== 'string') {
         return text;
@@ -45,6 +53,12 @@ export default async ({ Vue, state }) => {
     },
     getKeyStatus(obj, keys) {
       keys = keys.split('.');
+      if (keys.length > 0 && keys.includes('')) {
+        return  {
+          value: null,
+          isAvailable: false
+        }
+      }
       let pointer = obj;
       for (let i = 0; i < keys.length; i++) {
         const key = keys[i]
@@ -117,6 +131,9 @@ export default async ({ Vue, state }) => {
         extract(translation, keys)
       }
       return keys;
+    },
+    writeJson(path, obj) {
+      fs.writeFileSync(path, JSON.stringify(obj, null, 2))
     }
   }
   window.$helpers = helpers;

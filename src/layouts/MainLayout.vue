@@ -12,9 +12,10 @@
         />
 
         <q-toolbar-title>
-          {{$route.name === 'workspace' ? configs[$route.params.configIndex].projectName : 'Asora – Translator'}}
+          {{ $route.name === 'workspace' ? configs[$route.params.configIndex].projectName : 'Asora – Translator' }}
         </q-toolbar-title>
 
+        <q-btn v-if="$route.name === 'workspace'" @click="onEditConfig($route.params.configIndex)" icon="settings" round dense flat></q-btn>
       </q-toolbar>
     </q-header>
 
@@ -28,7 +29,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view/>
     </q-page-container>
 
   </q-layout>
@@ -42,20 +43,30 @@ export default {
   components: {
     DrawerList
   },
-  data () {
+  data() {
     return {
       leftDrawerOpen: false,
     }
   },
   computed: {
     configs: {
-      get () {
+      get() {
         return this.$store.state.translate.configs
       },
-      set (val) {
+      set(val) {
         this.$store.commit('translate/loadConfigs', val)
       }
     }
+  },
+  methods: {
+    onEditConfig(configIndex) {
+      try {
+        this.$router.push({name: 'edit-config', params: {configIndex: configIndex}})
+      } catch (e) {
+        this.$router.replace({name: 'edit-config', params: {configIndex: configIndex}, query: {try: '1'}})
+      }
+    },
+
   },
 }
 </script>

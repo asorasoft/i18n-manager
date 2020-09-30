@@ -1,0 +1,14 @@
+{
+  "label": {
+    "hello": "xin chào"
+  },
+  "paragraph": {
+    "agreement": "Đây là một đoạn văn bản thỏa thuận rất lớn về cách người dùng đồng ý với các điều khoản dịch vụ của chúng tôi."
+  },
+  "btn": {
+    "cancel": "hủy bỏ",
+    "okay": "Được chứ",
+    "click_to_remove_all_users": "nhấp để xóa tất cả người dùng",
+    "never_do_this_again": "không bao giờ làm điều này nữa"
+  }
+}

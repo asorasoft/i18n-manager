@@ -1,0 +1,14 @@
+{
+  "label": {
+    "hello": "hello"
+  },
+  "paragraph": {
+    "agreement": "This is a very large agreement text paragraph on how user agree our terms of service."
+  },
+  "btn": {
+    "cancel": "cancel",
+    "okay": "okay",
+    "click_to_remove_all_users": "click to remove all users",
+    "never_do_this_again": "usifanye hivi tena"
+  }
+}

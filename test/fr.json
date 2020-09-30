@@ -1,0 +1,14 @@
+{
+  "label": {
+    "hello": "Bonjour"
+  },
+  "paragraph": {
+    "agreement": "Il s'agit d'un très grand paragraphe de texte d'accord sur la manière dont l'utilisateur accepte nos conditions d'utilisation."
+  },
+  "btn": {
+    "cancel": "Annuler",
+    "okay": "d'accord",
+    "click_to_remove_all_users": "cliquez pour supprimer tous les utilisateurs",
+    "never_do_this_again": "ne plus jamais faire ça"
+  }
+}

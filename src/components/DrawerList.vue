@@ -12,17 +12,18 @@
         :key="link.title"
         v-bind="link"
       />
-      <q-separator />
+      <q-separator/>
 
       <q-item
         clickable
         v-for="(config, index) in configs"
-        :active="$route.name == 'workspace' && index.toString() == $route.params.configIndex"
+        :active="$route.name === 'workspace' && index.toString() === $route.params.configIndex.toString()"
         :key="config.localePath"
         @click="openWorkSpace(index)"
       >
         <q-item-section avatar :style="{minWidth: 0}">
-          <q-icon :name="pathExist(config.localePath) ? 'history' : ''" :color="pathExist(config.localePath) ? '' : 'red'"/>
+          <q-icon :name="pathExist(config.localePath) ? 'history' : ''"
+                  :color="pathExist(config.localePath) ? '' : 'red'"/>
         </q-item-section>
         <q-item-section>
           <q-item-label>{{ config.projectName }}</q-item-label>
@@ -33,7 +34,7 @@
 
         <q-popup-proxy context-menu>
           <q-list>
-            <q-item @click="moveToTop(config)" clickable>
+            <q-item @click="moveToTop(config)" clickable v-close-popup>
               <q-item-section :style="{minWidth: '24px'}">
                 <q-icon name="vertical_align_top"/>
               </q-item-section>
@@ -42,7 +43,7 @@
               </q-item-section>
             </q-item>
             <q-separator/>
-            <q-item clickable>
+            <q-item @click="onEditConfig(index)" clickable v-close-popup>
               <q-item-section :style="{minWidth: '24px'}">
                 <q-icon name="settings"/>
               </q-item-section>
@@ -51,7 +52,7 @@
               </q-item-section>
             </q-item>
             <q-separator/>
-            <q-item @click="showConfirmRemoveProject = true; deleteConfig = config" clickable>
+            <q-item @click="showConfirmRemoveProject = true; deleteConfig = config" clickable v-close-popup>
               <q-item-section class="text-red" :style="{minWidth: '24px'}">
                 <q-icon name="delete"/>
               </q-item-section>
@@ -68,7 +69,7 @@
       <q-card>
         <q-card-section class="row items-center">
           <q-avatar icon="delete" color="red" text-color="white"/>
-          <span class="q-ml-sm">Remove project <strong>{{deleteConfig.projectName}}</strong>. Are you sure?</span>
+          <span class="q-ml-sm">Remove project <strong>{{ deleteConfig.projectName }}</strong>. Are you sure?</span>
         </q-card-section>
 
         <q-card-actions align="right">
@@ -91,10 +92,10 @@ export default {
   },
   computed: {
     configs: {
-      get () {
+      get() {
         return this.$store.state.translate.configs
       },
-      set (val) {
+      set(val) {
         this.$store.commit('translate/loadConfigs', val)
       }
     }
@@ -122,20 +123,22 @@ export default {
           this.$router.push({name: 'workspace', params: {configIndex: updatedIndex}});
         }
       }
+      this.$store.dispatch('translate/saveConfigsToFile', this.configs)
     },
-    showNotify () {
+    showNotify() {
       this.$q.notify((this.$q.platform.is.desktop ? 'Clicked' : 'Tapped') + ' on a context menu item.')
     },
     openWorkSpace(index) {
       if (this.$route.name !== 'workspace' || this.$route.params.configIndex != index) {
-        this.$router.push({name: 'workspace', params: {configIndex: index}}).catch(err => {})
+        this.$router.push({name: 'workspace', params: {configIndex: index}}).catch(err => {
+        })
       }
     },
     pathExist(path) {
       return fs.existsSync(path);
     },
   },
-  data () {
+  data() {
     return {
       deleteConfig: null,
       showConfirmRemoveProject: false,

@@ -1,0 +1,14 @@
+{
+  "label": {
+    "hello": "Merhaba"
+  },
+  "paragraph": {
+    "agreement": "Bu, kullanıcının hizmet şartlarımızı nasıl kabul ettiğine dair çok büyük bir sözleşme metni paragrafıdır."
+  },
+  "btn": {
+    "cancel": "iptal etmek",
+    "okay": "Tamam",
+    "click_to_remove_all_users": "tüm kullanıcıları kaldırmak için tıklayın",
+    "never_do_this_again": "bunu bir daha asla yapma"
+  }
+}
