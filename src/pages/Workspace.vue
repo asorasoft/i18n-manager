@@ -536,7 +536,6 @@ export default {
           for (let i = 0; i < this.translationFiles.length; i++) {
             this.$set(this.translationModels, this.translationFiles[i], translations[i]);
           }
-          dialog.hide()
 
         } catch (e) {
           dialog.hide()
@@ -544,6 +543,8 @@ export default {
             icon: 'error',
             message: e.toString()
           });
+        } finally {
+          dialog.hide()
         }
       }
     },
