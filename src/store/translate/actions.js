@@ -2,6 +2,7 @@ const fs = require('fs')
 const os = require('os')
 
 const CONFIG_PATH = os.homedir() + '/.i18n_config'
+const COOKIE_PATH = os.homedir() + '/.i18n_cookie'
 
 export function saveConfig (
   context,
@@ -33,6 +34,13 @@ export function loadConfigsFromFile (context) {
   }
 }
 
+export function loadCookieFromFile (context) {
+  if (fs.existsSync(COOKIE_PATH)) {
+    return fs.readFileSync(COOKIE_PATH).toString();
+  }
+  return null;
+}
+
 export function saveConfigsToFile (context, configs) {
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(configs));
   context.dispatch('loadConfigs');
@@ -41,6 +49,11 @@ export function saveConfigsToFile (context, configs) {
 export function loadConfigs (context) {
   let configs = loadConfigsFromFile(context);
   context.commit('loadConfigs', configs);
+}
+
+export function loadGoogleTranslateCookie (context) {
+  let cookie = loadCookieFromFile(context);
+  updateGoogleTranslateCookie(context, cookie)
 }
 
 export function loadTranslation ({getters, commit}, selectedConfigIndex) {
@@ -55,4 +68,9 @@ export function loadTranslation ({getters, commit}, selectedConfigIndex) {
     translations[file] = translationList[index]
   })
   commit('loadTranslations', translations);
+}
+
+export function updateGoogleTranslateCookie({commit}, cookie) {
+  fs.writeFileSync(COOKIE_PATH, cookie);
+  commit('setGoogleTranslateCookie', cookie)
 }

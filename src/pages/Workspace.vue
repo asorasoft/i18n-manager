@@ -498,6 +498,10 @@ export default {
       }
     },
     async translate(file) {
+      const srcPhrase = this.getTranslateSrc()
+      if (!srcPhrase.text || !srcPhrase.text.trim()) {
+        return
+      }
       const loading = this.$q.notify({
         group: false,
         spinner: QSpinnerGears,
@@ -505,7 +509,7 @@ export default {
         timeout: 0
       })
       try {
-        this.$set(this.translationModels, file, await this.translateToLanguage(this.getTranslateSrc(), file));
+        this.$set(this.translationModels, file, await this.translateToLanguage(srcPhrase, file));
       } catch (e) {
         this.$q.notify({
           icon: 'error',

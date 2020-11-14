@@ -14,8 +14,10 @@ Vue.use(Vuex)
  * with the Store instance.
  */
 
+ let store = null
+
 export default function (/* { ssrContext } */) {
-  const Store = new Vuex.Store({
+  store = new Vuex.Store({
     modules: {
       translate,
     },
@@ -25,5 +27,7 @@ export default function (/* { ssrContext } */) {
     strict: process.env.DEV
   })
 
-  return Store
+  return store
 }
+
+export { store }

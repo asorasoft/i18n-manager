@@ -11,6 +11,7 @@ export default function () {
       //   }
       // }
     ],
-    translations: {}
+    translations: {},
+    googleTranslateCookie: null,
   }
 }

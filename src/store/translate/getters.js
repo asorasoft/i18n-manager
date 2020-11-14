@@ -2,6 +2,10 @@ export function configs (state) {
   return state.configs;
 }
 
+export function googleTranslateCookie (state) {
+  return state.googleTranslateCookie;
+}
+
 export function getTranslationFromKey(state) {
   return (keys) => {
     let result = {};

@@ -58,6 +58,7 @@
           type="submit"
           :color="existingConfig != null ? 'warning': 'primary'"/>
         <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm"/>
+        <q-btn class="float-right" v-if="this.$route.name === 'edit-config'" type="cancel" flat color="negative" @click="$router.back()">Cancel</q-btn>
       </div>
     </q-form>
   </div>
@@ -120,6 +121,7 @@
           this.primaryLanguage = configData.primaryLanguage
           this.foundFiles = Object.keys(configData.languageCodes)
           this.languageCodes = configData.languageCodes
+          this.onBlurPath()
         }
       },
       async pickFolder() {
