@@ -278,7 +278,7 @@ export default {
 
       if (translate.languages.isSupported(localeCode)) {
         dialog.update({
-          title: 'Translating...'
+          title: 'Translating...\n'
         })
         let pendingTasks = []
 
@@ -286,14 +286,16 @@ export default {
           for (let key in obj) {
             if (obj.hasOwnProperty(key)) {
               if (typeof (obj[key]) === 'string') {
-                pendingTasks.push(((pointer, key) => async () => {
+                pendingTasks.push(((pointer, key, dialog) => async () => {
                   try {
                     let result = (await translate(pointer[key], {from: baseLanguage, to: localeCode, client: 'webapp'}))
+                    dialog.update({ title: `Translating...\n(Success: ${key})` })
                     pointer[key] = result.text
                   } catch (e) {
+                    dialog.update({ title: `Translating...\n(Failed: ${key})` })
                     console.error(`Failed to translate: ${key}`)
                   }
-                })(obj, key))
+                })(obj, key, dialog))
               } else if (typeof (obj[key]) === 'object') {
                 translateObjectString(obj[key])
               }

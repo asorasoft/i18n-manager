@@ -9,13 +9,13 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "@k3rn31p4nic/google-translate-api": "^1.1.1",
     "@quasar/extras": "^1.9.6",
+    "@vitalets/google-translate-api": "^4.0.0",
     "axios": "^0.18.1",
     "core-js": "^3.6.5",
-    "google-translate-open-api": "^1.3.5",
     "quasar": "^1.14.0",
     "tunnel": "0.0.6",
+    "user-agents": "^1.0.559",
     "vue-i18n": "^8.0.0"
   },
   "devDependencies": {
