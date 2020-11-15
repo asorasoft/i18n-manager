@@ -193,7 +193,7 @@ export default {
               title: 'Overwrite key',
               message: `Are you sure to overwrite on key "${this.displayKey}"?`,
               cancel: true,
-              persistent: true
+              persistent: false
             }).onOk(() => {
               this.save(true)
             })
@@ -446,12 +446,13 @@ export default {
       }
     },
     getTranslateSrc(fromKeyOnly = false) {
+      let primaryLanguage = this.config.primaryLanguage
       let translateSrc = this.$helpers.normalizeStringCase(this.finalKey.split('.').pop());
       let fromLanguage = ''; // en
 
-      if (!fromKeyOnly && this.translationModels[this.config.primaryLanguage]) {
-        translateSrc = this.translationModels[this.config.primaryLanguage];
-        fromLanguage = this.config.languageCodes[this.config.primaryLanguage];
+      if (!fromKeyOnly && this.translationModels[primaryLanguage]) {
+        translateSrc = this.translationModels[primaryLanguage];
+        fromLanguage = this.config.languageCodes[primaryLanguage];
       }
 
       return {
@@ -526,7 +527,7 @@ export default {
     },
     async translateAll() {
       this.finalKey = this.displayKey;
-      let src = this.getTranslateSrc(true);
+      let src = this.getTranslateSrc(false);
       if (src.text) {
         const dialog = this.$q.dialog({
           title: 'Translating...',
@@ -599,8 +600,13 @@ export default {
       });
     },
     save(force = false) {
+      let onlyNoneEmptyFields = true;
+
       try {
         for (let file of this.translationFiles) {
+          if (onlyNoneEmptyFields && this.translationModels[file].trim() == '') {
+            continue;
+          }
           this.saveToKey(this.finalKey, this.translationModels[file], file, force)
         }
 

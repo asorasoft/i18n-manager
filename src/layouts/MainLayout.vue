@@ -43,6 +43,7 @@
     </q-drawer>
 
     <q-drawer
+      ref="translationTree"
       v-if="onWorkspace"
       v-model="rightDrawerOpen"
       show-if-above
@@ -143,6 +144,10 @@ export default {
   methods: {
     setCurrentKey(key) {
       EventBus.$emit("SET_CURRENT_KEY", key)
+      const isOverlay = !this.$refs.translationTree.onLayout
+      if (isOverlay) {
+        this.rightDrawerOpen = false
+      }
     },
     updateTree() {
       if (this.configIndex === undefined) {
