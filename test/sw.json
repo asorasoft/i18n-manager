@@ -1,6 +1,11 @@
 {
   "label": {
-    "hello": "hello"
+    "hello": "hello",
+    "what": "nini",
+    "show_all": "Onyesha yote",
+    "introduction": "utangulizi",
+    "namespace": "nafasi ya majina",
+    "not_applicable": "haitumiki"
   },
   "paragraph": {
     "agreement": "This is a very large agreement text paragraph on how user agree our terms of service."
@@ -10,5 +15,10 @@
     "okay": "okay",
     "click_to_remove_all_users": "click to remove all users",
     "never_do_this_again": "usifanye hivi tena"
+  },
+  "title": {
+    "welcome": "karibu",
+    "first_heading": "kichwa cha kwanza",
+    "preview": "hakikisho"
   }
 }

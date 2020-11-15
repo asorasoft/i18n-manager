@@ -1,3 +1,5 @@
+import { EventBus } from '../../utils/event_bus.js'
+
 export function loadConfigs (state, configs) {
   this.state.translate.configs = configs;
 }
@@ -7,12 +9,12 @@ export function loadTranslations (state, translations) {
 }
 
 export function addTranslations (state, {file, keys, value, force, config}) {
-  $helpers.setProperties(this.state.translate.translations[file], keys, value, force);
+  $helpers.setProperties(this.state.translate.translations[file], keys, value, force)
   $helpers.writeJson(`${config.localePath}/${file}`, this.state.translate.translations[file])
 }
 
 export function deleteTranslationKey (state, {file, keys, config}) {
-  $helpers.setProperties(this.state.translate.translations[file], keys, null, true);
+  $helpers.setProperties(this.state.translate.translations[file], keys, null, true)
   $helpers.writeJson(`${config.localePath}/${file}`, this.state.translate.translations[file])
 }
 

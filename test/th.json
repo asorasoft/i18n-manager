@@ -1,6 +1,11 @@
 {
   "label": {
-    "hello": "hello"
+    "hello": "hello",
+    "what": "อะไร",
+    "show_all": "แสดงทั้งหมด",
+    "introduction": "บทนำ",
+    "namespace": "เนมสเปซ",
+    "not_applicable": "ไม่สามารถใช้ได้"
   },
   "paragraph": {
     "agreement": "This is a very large agreement text paragraph on how user agree our terms of service."
@@ -10,5 +15,10 @@
     "okay": "okay",
     "click_to_remove_all_users": "click to remove all users",
     "never_do_this_again": "อย่าทำแบบนี้อีก"
+  },
+  "title": {
+    "welcome": "ยินดีต้อนรับ",
+    "first_heading": "หัวเรื่องแรก",
+    "preview": "ดูตัวอย่าง"
   }
 }

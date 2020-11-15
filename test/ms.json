@@ -1,6 +1,11 @@
 {
   "label": {
-    "hello": "hello"
+    "hello": "hello",
+    "what": "apa",
+    "show_all": "tunjukkan semua",
+    "introduction": "pengenalan",
+    "namespace": "ruang nama",
+    "not_applicable": "tidak berkaitan"
   },
   "paragraph": {
     "agreement": "This is a very large agreement text paragraph on how user agree our terms of service."
@@ -10,5 +15,10 @@
     "okay": "okay",
     "click_to_remove_all_users": "click to remove all users",
     "never_do_this_again": "jangan sekali-kali melakukan ini lagi"
+  },
+  "title": {
+    "welcome": "selamat datang",
+    "first_heading": "tajuk pertama",
+    "preview": "pratonton"
   }
 }

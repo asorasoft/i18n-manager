@@ -147,9 +147,11 @@
 </template>
 
 <script>
+import { EventBus } from '../utils/event_bus.js';
 const fs = require('fs');
 import translate from "../plugins/translate.js";
 import {copyToClipboard, scroll, QSpinnerGears} from 'quasar';
+import {mapGetters} from 'vuex';
 
 export default {
   name: 'Workspace',
@@ -364,6 +366,7 @@ export default {
             keys: this.displayKey, // 'alert.exchange_rate_is_created',
             config: this.config
           });
+          EventBus.$emit('TRANSLATION_UPDATED')
         } catch (e) {
           this.$q.notify({
             icon: 'error',
@@ -400,6 +403,7 @@ export default {
           this.saveToKey(this.newKeyChangeModel, values[file], file)
           this.onDeleteKey();
         }
+        EventBus.$emit('TRANSLATION_UPDATED')
         this.showChangeKeyModel = false
       }
       this.updateKeyChecker()
@@ -600,6 +604,8 @@ export default {
           this.saveToKey(this.finalKey, this.translationModels[file], file, force)
         }
 
+        EventBus.$emit('TRANSLATION_UPDATED')
+
         this.updateKeyChecker()
 
         this.$q.notify({
@@ -622,11 +628,15 @@ export default {
       this.suggestionIndex = null;
       this.suggestionList = [];
       this.translationModels = {};
+      EventBus.$emit('TRANSLATION_UPDATED')
     },
     updateKeyChecker() {
       this.existingKeyValue = this.$store.getters['translate/getTranslationFromKey'](this.displayKey);
       this.keyStatuses = this.$store.getters['translate/getKeyStatuses'](this.displayKey);
-    }
+    },
+    handleCurrentKeyUpdate(key) {
+      this.finalKey = key
+    },
   },
   watch: {
     displayKey() {
@@ -642,6 +652,10 @@ export default {
   },
   created() {
     this.updateWorkspace();
+    EventBus.$on("SET_CURRENT_KEY", this.handleCurrentKeyUpdate)
+  },
+  destroyed() {
+    EventBus.$off("SET_CURRENT_KEY", this.handleCurrentKeyUpdate)
   }
 }
 </script>

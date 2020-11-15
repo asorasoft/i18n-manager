@@ -1,6 +1,11 @@
 {
   "label": {
-    "hello": "xin chào"
+    "hello": "xin chào",
+    "what": "gì",
+    "show_all": "hiển thị tất cả",
+    "introduction": "Giới thiệu",
+    "namespace": "không gian tên",
+    "not_applicable": "không áp dụng"
   },
   "paragraph": {
     "agreement": "Đây là một đoạn văn bản thỏa thuận rất lớn về cách người dùng đồng ý với các điều khoản dịch vụ của chúng tôi."
@@ -10,5 +15,10 @@
     "okay": "Được chứ",
     "click_to_remove_all_users": "nhấp để xóa tất cả người dùng",
     "never_do_this_again": "không bao giờ làm điều này nữa"
+  },
+  "title": {
+    "welcome": "chào mừng",
+    "first_heading": "tiêu đề đầu tiên",
+    "preview": "xem trước"
   }
 }

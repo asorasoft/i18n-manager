@@ -1,6 +1,11 @@
 {
   "label": {
-    "hello": "你好"
+    "hello": "你好",
+    "what": "what",
+    "show_all": "show all",
+    "introduction": "introduction",
+    "namespace": "namespace",
+    "not_applicable": "not applicable"
   },
   "paragraph": {
     "agreement": "这是关于用户如何同意我们的服务条款的非常大的协议文本段落。"
@@ -10,5 +15,10 @@
     "okay": "好的",
     "click_to_remove_all_users": "单击以删除所有用户",
     "never_do_this_again": "永远不会再这样做"
+  },
+  "title": {
+    "welcome": "welcome",
+    "first_heading": "first heading",
+    "preview": "preview"
   }
 }

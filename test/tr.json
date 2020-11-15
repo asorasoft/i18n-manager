@@ -1,6 +1,11 @@
 {
   "label": {
-    "hello": "Merhaba"
+    "hello": "Merhaba",
+    "what": "ne",
+    "show_all": "Hepsini Göster ↓",
+    "introduction": "Giriş",
+    "namespace": "ad alanı",
+    "not_applicable": "uygulanamaz"
   },
   "paragraph": {
     "agreement": "Bu, kullanıcının hizmet şartlarımızı nasıl kabul ettiğine dair çok büyük bir sözleşme metni paragrafıdır."
@@ -10,5 +15,10 @@
     "okay": "Tamam",
     "click_to_remove_all_users": "tüm kullanıcıları kaldırmak için tıklayın",
     "never_do_this_again": "bunu bir daha asla yapma"
+  },
+  "title": {
+    "welcome": "Hoşgeldiniz",
+    "first_heading": "ilk başlık",
+    "preview": "Ön izleme"
   }
 }

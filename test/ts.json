@@ -1,6 +1,11 @@
 {
   "label": {
-    "hello": "hello"
+    "hello": "hello",
+    "what": "what",
+    "show_all": "show all",
+    "introduction": "introduction",
+    "namespace": "namespace",
+    "not_applicable": "not applicable"
   },
   "paragraph": {
     "agreement": "This is a very large agreement text paragraph on how user agree our terms of service."
@@ -10,5 +15,10 @@
     "okay": "okay",
     "click_to_remove_all_users": "click to remove all users",
     "never_do_this_again": "never do this again"
+  },
+  "title": {
+    "welcome": "welcome",
+    "first_heading": "first heading",
+    "preview": "preview"
   }
 }

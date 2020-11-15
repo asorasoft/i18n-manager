@@ -1,6 +1,11 @@
 {
   "label": {
-    "hello": "Bonjour"
+    "hello": "Bonjour",
+    "what": "quoi",
+    "show_all": "Afficher tout",
+    "introduction": "introduction",
+    "namespace": "espace de noms",
+    "not_applicable": "n'est pas applicable"
   },
   "paragraph": {
     "agreement": "Il s'agit d'un très grand paragraphe de texte d'accord sur la manière dont l'utilisateur accepte nos conditions d'utilisation."
@@ -10,5 +15,10 @@
     "okay": "d'accord",
     "click_to_remove_all_users": "cliquez pour supprimer tous les utilisateurs",
     "never_do_this_again": "ne plus jamais faire ça"
+  },
+  "title": {
+    "welcome": "Bienvenue",
+    "first_heading": "premier titre",
+    "preview": "Aperçu"
   }
 }

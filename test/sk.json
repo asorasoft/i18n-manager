@@ -1,6 +1,11 @@
 {
   "label": {
-    "hello": "hello"
+    "hello": "hello",
+    "what": "čo",
+    "show_all": "ukázať všetko",
+    "introduction": "úvod",
+    "namespace": "menný priestor",
+    "not_applicable": "nepoužiteľné"
   },
   "paragraph": {
     "agreement": "This is a very large agreement text paragraph on how user agree our terms of service."
@@ -10,5 +15,10 @@
     "okay": "okay",
     "click_to_remove_all_users": "click to remove all users",
     "never_do_this_again": "nikdy to viac nerob"
+  },
+  "title": {
+    "welcome": "vitaj",
+    "first_heading": "prvý nadpis",
+    "preview": "Náhľad"
   }
 }
