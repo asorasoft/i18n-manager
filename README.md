@@ -2,6 +2,13 @@
 
 GUI for managing translation
 
+## Auto build
+```bash
+sudo bash build.sh
+```
+
+---
+
 ## Install the dependencies
 This requires nodejs 10+
 ```bash

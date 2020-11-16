@@ -7,13 +7,13 @@ if [[ `node -v` =~ $re ]]; then
   if [[ $NODE_VERSION == 10 || $NODE_VERSION == 12 || $NODE_VERSION == 14 ]]; then
     echo "Correct node version: $NODE_VERSION"
 
+    echo "Running: npm install..."
+    npm install
+
     if ! type "quasar" > /dev/null; then
       echo "Installing quasar cli..."
       npm install -g @quasar/cli
     fi
-
-    echo "Running: npm install..."
-    npm install
 
     echo "Building application..."
     quasar build -m electron
