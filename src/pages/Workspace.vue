@@ -530,7 +530,7 @@ export default {
     },
     async translateAll() {
       this.finalKey = this.displayKey;
-      let src = this.getTranslateSrc(false);
+      let src = this.getTranslateSrc(true);
       if (src.text) {
         const dialog = this.$q.dialog({
           title: 'Translating...',
