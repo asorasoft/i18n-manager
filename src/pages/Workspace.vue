@@ -518,7 +518,10 @@ export default {
       } catch (e) {
         this.$q.notify({
           icon: 'error',
-          message: e.toString()
+          message: e.toString(),
+          actions: [
+            { label: "set cookie", color: 'white', handler: () => {EventBus.$emit("SET_COOKIE")} }
+          ],
         });
       } finally {
         // Close notify
@@ -552,7 +555,10 @@ export default {
           dialog.hide()
           this.$q.notify({
             icon: 'error',
-            message: e.toString()
+            message: e.toString(),
+            actions: [
+              { label: "set cookie", color: 'white', handler: () => {EventBus.$emit("SET_COOKIE")} }
+            ],
           });
         } finally {
           dialog.hide()
@@ -601,10 +607,11 @@ export default {
     },
     save(force = false) {
       let onlyNoneEmptyFields = true;
+      let isOverwrite = force
 
       try {
         for (let file of this.translationFiles) {
-          if (onlyNoneEmptyFields && this.translationModels[file].trim() == '') {
+          if (onlyNoneEmptyFields && this.translationModels[file].trim() == '' && isOverwrite) {
             continue;
           }
           this.saveToKey(this.finalKey, this.translationModels[file], file, force)

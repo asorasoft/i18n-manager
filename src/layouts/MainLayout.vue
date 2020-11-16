@@ -167,7 +167,7 @@ export default {
         this.tree = []; return
       }
       this.tree = this.convertObjectToTree(primaryTranslation)
-      console.log(this.tree)
+      // console.log(this.tree)
     },
     convertObjectToTree(object) {
       const tree = []
@@ -225,16 +225,18 @@ export default {
     resetFilter () {
       this.filter = ''
       this.$refs.filter.focus()
-    }
+    },
   },
   mounted() {
     this.updateTree()
   },
   created() {
     EventBus.$on("TRANSLATION_UPDATED", this.handleTranslationUpdate)
+    EventBus.$on("SET_COOKIE", this.onUpdateCookie)
   },
   destroyed() {
     EventBus.$off("TRANSLATION_UPDATED", this.handleTranslationUpdate)
+    EventBus.$off("SET_COOKIE", this.onUpdateCookie)
   }
 }
 </script>
