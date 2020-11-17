@@ -617,6 +617,12 @@ export default {
           this.saveToKey(this.finalKey, this.translationModels[file], file, force)
         }
 
+        this.finalKey = ''
+
+        for (let file of this.translationFiles) {
+          this.$set(this.translationModels, file, '')
+        }
+
         EventBus.$emit('TRANSLATION_UPDATED')
 
         this.updateKeyChecker()
