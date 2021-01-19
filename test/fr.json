@@ -14,7 +14,9 @@
     "cancel": "Annuler",
     "okay": "d'accord",
     "click_to_remove_all_users": "cliquez pour supprimer tous les utilisateurs",
-    "never_do_this_again": "ne plus jamais faire ça"
+    "never_do_this_again": "ne plus jamais faire ça",
+    "click": "Cliquez sur",
+    "hello_world": "Bonjour le monde"
   },
   "title": {
     "welcome": "Bienvenue",

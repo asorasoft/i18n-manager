@@ -14,7 +14,9 @@
     "cancel": "取消",
     "okay": "好的",
     "click_to_remove_all_users": "单击以删除所有用户",
-    "never_do_this_again": "永远不会再这样做"
+    "never_do_this_again": "永远不会再这样做",
+    "click": "click",
+    "hello_world": "Hello world"
   },
   "title": {
     "welcome": "welcome",

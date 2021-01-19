@@ -14,7 +14,9 @@
     "cancel": "cancel",
     "okay": "okay",
     "click_to_remove_all_users": "click to remove all users",
-    "never_do_this_again": "อย่าทำแบบนี้อีก"
+    "never_do_this_again": "อย่าทำแบบนี้อีก",
+    "click": "คลิก",
+    "hello_world": "สวัสดีชาวโลก"
   },
   "title": {
     "welcome": "ยินดีต้อนรับ",

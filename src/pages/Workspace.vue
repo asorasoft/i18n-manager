@@ -10,6 +10,13 @@
                    icon="edit" label="change key"></q-btn>
           </div>
           <div class="absolute-right">
+            <q-btn
+              v-if="!!displayKey"
+              style="margin-right: 5px;"
+              icon="mdi-eraser"
+              color="red"
+              @click="clear"
+            ></q-btn>
             <q-btn :disable="currentKeyStatus.disabled"
                    :color="currentKeyStatus.color"
                    :icon="currentKeyStatus.icon"
@@ -233,6 +240,13 @@ export default {
     },
   },
   methods: {
+    clear() {
+      this.finalKey = ''
+      for (let file of this.translationFiles) {
+        this.$set(this.translationModels, file, '')
+      }
+      this.updateKeyChecker()
+    },
     addNewLanguage() {
       this.$q.dialog({
         title: 'New translation',
@@ -424,7 +438,7 @@ export default {
     },
     onInputKey() {
       const selectionPosition = this.$refs.inputKey.$refs.input.selectionStart;
-      this.displayKey = this.displayKey.replace(/ /g, '_');
+      this.displayKey = this.displayKey.replace(/ /g, '_').toLowerCase();
       this.$nextTick(() => {
         this.$refs.inputKey.$refs.input.setSelectionRange(selectionPosition, selectionPosition);
       });
@@ -448,7 +462,7 @@ export default {
     getTranslateSrc(fromKeyOnly = false) {
       let primaryLanguage = this.config.primaryLanguage
       let translateSrc = this.$helpers.normalizeStringCase(this.finalKey.split('.').pop());
-      let fromLanguage = ''; // en
+      let fromLanguage = 'en'; // en
 
       if (!fromKeyOnly && this.translationModels[primaryLanguage]) {
         translateSrc = this.translationModels[primaryLanguage];
@@ -460,19 +474,26 @@ export default {
         language: fromLanguage,
       }
     },
+    toSentenceCase(text) {
+      if (!text) {
+        return text
+      }
+      return text.charAt(0).toUpperCase() + text.slice(1)
+    },
     async translateToLanguage(src, fileName) {
-      const fromLanguage = src.language;
+      const fromLanguage =  src.language;
       const toLanguage = this.getLanguageCode(fileName);
       let result = null;
 
-      if (this.config.primaryLanguage === fileName
-        || fromLanguage === toLanguage
-        || !translate.languages.isSupported(toLanguage)) {
-        result = src.text; // don't forget to correct grammar here
+      if (//(this.config.primaryLanguage === fileName) ||
+        fromLanguage === toLanguage ||
+        !translate.languages.isSupported(toLanguage)) {
+        result = this.toSentenceCase(src.text); // don't forget to correct grammar here
       } else {
         result = await translate(src.text, {from: fromLanguage, to: toLanguage, client: 'webapp'});
-        result = result.text
+        result = this.toSentenceCase(result.text)
       }
+
       return result || '';
     },
     getLanguageCode(fileName) {
@@ -530,7 +551,7 @@ export default {
     },
     async translateAll() {
       this.finalKey = this.displayKey;
-      let src = this.getTranslateSrc(true);
+      let src = this.getTranslateSrc(false); // Can decide whether to pick from key or from primary language
       if (src.text) {
         const dialog = this.$q.dialog({
           title: 'Translating...',
@@ -617,11 +638,11 @@ export default {
           this.saveToKey(this.finalKey, this.translationModels[file], file, force)
         }
 
-        this.finalKey = ''
+        // this.finalKey = ''
 
-        for (let file of this.translationFiles) {
-          this.$set(this.translationModels, file, '')
-        }
+        // for (let file of this.translationFiles) {
+        //   this.$set(this.translationModels, file, '')
+        // }
 
         EventBus.$emit('TRANSLATION_UPDATED')
 

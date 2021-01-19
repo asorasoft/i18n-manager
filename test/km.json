@@ -14,7 +14,9 @@
     "cancel": "បោះបង់",
     "okay": "យល់ព្រម",
     "click_to_remove_all_users": "ចុចដើម្បីលុបអ្នកប្រើទាំងអស់",
-    "never_do_this_again": "កុំធ្វើបែបនេះទៀត"
+    "never_do_this_again": "កុំធ្វើបែបនេះទៀត",
+    "click": "ចុច",
+    "hello_world": "សួស្តី​ពិភពលោក"
   },
   "title": {
     "welcome": "សូមស្វាគមន៍",

@@ -14,7 +14,9 @@
     "cancel": "iptal etmek",
     "okay": "Tamam",
     "click_to_remove_all_users": "tüm kullanıcıları kaldırmak için tıklayın",
-    "never_do_this_again": "bunu bir daha asla yapma"
+    "never_do_this_again": "bunu bir daha asla yapma",
+    "click": "Tıklayın",
+    "hello_world": "Selam Dünya"
   },
   "title": {
     "welcome": "Hoşgeldiniz",
