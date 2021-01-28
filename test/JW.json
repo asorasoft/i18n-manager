@@ -1,6 +1,6 @@
 {
   "label": {
-    "hello": "hello",
+    "hello": "Hi",
     "what": "what",
     "show_all": "show all",
     "introduction": "introduction",
@@ -8,13 +8,13 @@
     "not_applicable": "not applicable"
   },
   "paragraph": {
-    "agreement": "This is a very large agreement text paragraph on how user agree our terms of service."
+    "agreement": "Iki minangka paragraf teks perjanjian sing gedhe banget babagan kepiye pangguna setuju karo syarat layanane."
   },
   "btn": {
-    "cancel": "取消",
-    "okay": "好的",
-    "click_to_remove_all_users": "单击以删除所有用户",
-    "never_do_this_again": "永远不会再这样做",
+    "cancel": "cancel",
+    "okay": "okay",
+    "click_to_remove_all_users": "click to remove all users",
+    "never_do_this_again": "never do this again",
     "click": "click",
     "hello_world": "Hello world"
   },

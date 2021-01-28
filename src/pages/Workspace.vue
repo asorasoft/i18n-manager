@@ -551,7 +551,7 @@ export default {
     },
     async translateAll() {
       this.finalKey = this.displayKey;
-      let src = this.getTranslateSrc(false); // Can decide whether to pick from key or from primary language
+      let src = this.getTranslateSrc(true); // Can decide whether to pick from key or from primary language
       if (src.text) {
         const dialog = this.$q.dialog({
           title: 'Translating...',
