@@ -10,6 +10,8 @@ if [[ `node -v` =~ $re ]]; then
     echo "Running: npm install..."
     npm install
 
+    # npm install -g @vitalets/google-translate-api
+
     if ! type "quasar" > /dev/null; then
       echo "Installing quasar cli..."
       npm install -g @quasar/cli

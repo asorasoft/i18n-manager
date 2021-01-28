@@ -1,3 +1,7 @@
+const app = require('electron').remote.app
+const path = require('path')
+const { spawn } = require('child_process')
+
 const translatePlugin = require("@vitalets/google-translate-api");
 // const UserAgent = require('user-agents');
 
@@ -36,17 +40,19 @@ function execute (command, callback) {
 
 const translate = (phrase, option) => {
   return new Promise((resolve, reject) => {
-    // console.log(`node 'src/scripts/translate.js' '${phrase}' '${option.from || 'en'}' '${option.to || en}'`)
-    try {
-      execute(`node 'src/scripts/translate.js' "${phrase}" '${option.from || 'en'}' '${option.to || en}'`, output => {
-        // console.log(output)
-        resolve({
-          text: output,
-        })
+    const scriptPath = path.join('extraResources/', 'translatescript.js');
+    let electron = spawn('node', [scriptPath, phrase, option.from || 'en', option.to || 'en'])
+    // let electron = spawn('node', ['-e', 'const a=require("@vitalets/google-translate-api");a(process.argv[1],{from:process.argv[2],to:process.argv[3]}).then(e=>{console.log(e.text)}).catch(e=>{console.error(e)});', phrase, option.from || 'en', option.to || 'en'])
+
+    electron.stdout.on('data', function (data) {
+      resolve({
+        text: data.toString(),
       })
-    } catch (err) {
-      reject(err)
-    }
+    })
+
+    electron.stderr.on('data', function (data) {
+      reject(data.toString())
+    })
   })
 }
 
