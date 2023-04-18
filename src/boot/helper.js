@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 import translate from "../plugins/translate.js";
+import parser from "../plugins/parser.js";
 
 // "async" is optional;
 // more info on params: https://quasar.dev/quasar-cli/cli-documentation/boot-files#Anatomy-of-a-boot-file
@@ -22,17 +23,10 @@ export default async ({ Vue, state }) => {
       });
     },
     getJsonFilesInFolder(path) {
-      if (!fs.existsSync(path)) {
-        return [];
-      }
-      return fs.readdirSync(path).filter((fileName) => fileName.endsWith('.json'));
+      return parser.listTranslationFiles(path)
     },
     parseJson(jsonString) {
-      try {
-        return new Function(`return ${jsonString}`)();
-      } catch (e) {
-        throw new Errror("Invalid file");
-      }
+      return parser.translationDataParser(jsonString)
     },
     getProperties(obj, keys) {
       keys = keys.split('.');
@@ -133,7 +127,7 @@ export default async ({ Vue, state }) => {
       return keys;
     },
     writeJson(path, obj) {
-      fs.writeFileSync(path, JSON.stringify(obj, null, 2))
+      parser.translationFileWriter(path, obj)
     }
   }
   window.$helpers = helpers;

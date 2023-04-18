@@ -134,7 +134,7 @@
         }
       },
       checkFoundFile() {
-        const files = fs.readdirSync(this.localePath).filter((fileName) => fileName.endsWith('.json'))
+        const files = this.$helpers.getJsonFilesInFolder(this.localePath)
         if (files.length === 0) {
           this.foundFiles = [];
         } else {
