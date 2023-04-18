@@ -17,7 +17,7 @@ if [[ `node -v` =~ $re ]]; then
 
     echo "Building application..."
     quasar build -m electron
-    # quasar build -m electron --platform=darwin --arch=arm64
+    # quasar build -m electron --platform=darwin --arch=arm64 --osx-sign=true
 
     echo "Please look inside >> ./dist/electron"
   else
