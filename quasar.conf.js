@@ -169,6 +169,10 @@ module.exports = function (/* ctx */) {
 
         // Windows only
         // win32metadata: { ... }
+
+        "dmg": {
+          "sign": true
+        },
       },
 
       builder: {
