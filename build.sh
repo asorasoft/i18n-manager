@@ -4,7 +4,7 @@ re="^v([^.]+).*"
 
 if [[ `node -v` =~ $re ]]; then
   NODE_VERSION=${BASH_REMATCH[1]}
-  if [[ $NODE_VERSION == 10 || $NODE_VERSION == 12 || $NODE_VERSION == 14 ]]; then
+  if [[ $NODE_VERSION == 16 ]]; then
     echo "Correct node version: $NODE_VERSION"
 
     echo "Running: npm install..."
@@ -17,10 +17,11 @@ if [[ `node -v` =~ $re ]]; then
 
     echo "Building application..."
     quasar build -m electron
+    # quasar build -m electron --platform=darwin --arch=arm64
 
     echo "Please look inside >> ./dist/electron"
   else
-    echo "Please use node version 10, 12 or 14"
+    echo "Please use node version 16"
   fi
 else
   echo "Cannot detect node version, please install one."
