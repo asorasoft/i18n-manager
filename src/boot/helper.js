@@ -28,6 +28,9 @@ export default async ({ Vue, state }) => {
     parseJson(jsonString) {
       return parser.translationDataParser(jsonString)
     },
+    newFileName(path, locale) {
+      return parser.newFileName(path, locale)
+    },
     getProperties(obj, keys) {
       keys = keys.split('.');
       let pointer = obj;

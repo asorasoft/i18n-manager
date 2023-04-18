@@ -322,7 +322,7 @@ export default {
         translateObjectString(newTranslation)
         await Promise.all(pendingTasks.map(task => task()))
       }
-      fs.writeFileSync(this.config.localePath + '/' + localeCode + '.json', JSON.stringify(newTranslation, null, 2))
+      fs.writeFileSync(this.$helpers.newFileName(this.config.localePath, localeCode), JSON.stringify(newTranslation, null, 2))
       await this.$store.dispatch('translate/loadTranslation', this.$route.params.configIndex);
       this.translationFilesComputeCounter++;
       dialog.hide()

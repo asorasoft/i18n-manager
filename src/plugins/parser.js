@@ -27,6 +27,9 @@ const jsonParser = {
     },
     translationFileWriter: (path, obj) => {
         fs.writeFileSync(path, JSON.stringify(obj, replacer, 2))
+    },
+    newFileName: (path, languageCode) => {
+        return path + '/' + languageCode + '.json'
     }
 }
 
@@ -49,6 +52,9 @@ const dartParser = {
         var fileName = path.split('/').at(-1)
         var varName = fileName.split('.')[0]
         fs.writeFileSync(path, `// ignore_for_file: prefer_single_quotes\n\nfinal ${varName} = ` + JSON.stringify(obj, replacer, 2) + ';')
+    },
+    newFileName: (path, languageCode) => {
+        return path + '/' + languageCode + 'Map.dart'
     }
 }
 
