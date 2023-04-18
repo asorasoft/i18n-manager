@@ -1,5 +1,16 @@
 const fs = require('fs')
 
+// To make json key sorted
+const replacer = (key, value) =>
+	value instanceof Object && !(value instanceof Array) ? 
+		Object.keys(value)
+		.sort()
+		.reduce((sorted, key) => {
+			sorted[key] = value[key];
+			return sorted 
+		}, {}) :
+		value;
+
 const jsonParser = {
     listTranslationFiles: (path) => {
         if (!fs.existsSync(path)) {
@@ -15,7 +26,7 @@ const jsonParser = {
         }
     },
     translationFileWriter: (path, obj) => {
-        fs.writeFileSync(path, JSON.stringify(obj, null, 2))
+        fs.writeFileSync(path, JSON.stringify(obj, replacer, 2))
     }
 }
 
@@ -37,7 +48,7 @@ const dartParser = {
     translationFileWriter: (path, obj) => {
         var fileName = path.split('/').at(-1)
         var varName = fileName.split('.')[0]
-        fs.writeFileSync(path, `final ${varName} = ` + JSON.stringify(obj, null, 2) + ';')
+        fs.writeFileSync(path, `// ignore_for_file: prefer_single_quotes\n\nfinal ${varName} = ` + JSON.stringify(obj, replacer, 2) + ';')
     }
 }
 

@@ -51,6 +51,11 @@ export function loadConfigs (context) {
   context.commit('loadConfigs', configs);
 }
 
+export function removeConfig(context, configToRemove) {
+  context.commit('removeConfig', configToRemove);
+  saveConfigsToFile(context, context.getters.configs);
+}
+
 export function loadGoogleTranslateCookie (context) {
   let cookie = loadCookieFromFile(context);
   updateGoogleTranslateCookie(context, cookie)

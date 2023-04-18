@@ -106,7 +106,7 @@ export default {
       if (this.$route.name === 'workspace' && this.configs[this.$route.params.configIndex] === this.deleteConfig) {
         removeCurrentProject = true;
       }
-      this.$store.commit('translate/removeConfig', this.deleteConfig);
+      this.$store.dispatch('translate/removeConfig', this.deleteConfig);
       if (removeCurrentProject) {
         this.$router.push({name: 'create-project'});
       }
