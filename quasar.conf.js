@@ -162,17 +162,20 @@ module.exports = function (/* ctx */) {
         // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
 
         // OS X / Mac App Store
-        // appBundleId: '',
-        // appCategoryType: '',
-        // osxSign: '',
-        // protocol: 'myapp://path',
+        appBundleId: 'com.asorasoft.i18nman',
+        appCategoryType: 'Utility',
+        osxSign: '',
+        protocol: 'asorasoft://i18nman',
 
         // Windows only
         // win32metadata: { ... }
 
-        "dmg": {
-          "sign": true
-        },
+        // mac: {
+        //   target: [
+        //     "zip",
+        //     "dmg"
+        //   ]
+        // }
       },
 
       builder: {
