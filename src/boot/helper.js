@@ -3,6 +3,7 @@
 const fs = require('fs');
 import translate from "../plugins/translate.js";
 import parser from "../plugins/parser.js";
+import valueLocator from "src/plugins/valueLocator.js";
 
 // "async" is optional;
 // more info on params: https://quasar.dev/quasar-cli/cli-documentation/boot-files#Anatomy-of-a-boot-file
@@ -49,77 +50,24 @@ export default async ({ Vue, state }) => {
       }
     },
     getKeyStatus(obj, keys) {
-      keys = keys.split('.');
-      if (keys.length > 0 && keys.includes('')) {
+
+      var locator = valueLocator(obj, keys)
+      if (!locator.isValidKey()) {
         return  {
           value: null,
           isAvailable: false
         }
-      }
-      let pointer = obj;
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i]
-        if (key === '') {
-          return {
-            value: null,
-            isAvailable: false
-          };
-        }
-        if (i === keys.length - 1) {
-          return {
-            value: pointer[key],
-            isAvailable: pointer[key] === undefined,
-          };
-        }
-        if (!pointer.hasOwnProperty(key)) {
-          return {
-            value: null,
-            isAvailable: true,
-          };
-        } else if (typeof pointer[key] === 'string') {
-          return {
-            value: null,
-            isAvailable: false,
-          };
-        } else {
-          pointer = pointer[key];
+      } else {
+        var value = locator.getValue()
+        return {
+          value: value,
+          isAvailable: value === undefined,
         }
       }
     },
     setProperties(obj, keys, value, force = false) {
-      keys = keys.split('.');
-      let pointer = obj;
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-
-        // Reach last key
-        if (i === keys.length - 1) {
-          if (!force) {
-            if (typeof pointer[key] === "string") {
-              throw new Error(`Key ${key} is already exist as a string`);
-            } else if (typeof pointer[key] === "object") {
-              throw new Error(`Key ${key} is already exist as an object key`)
-            }
-          }
-          if (value === null) {
-            delete pointer[key];
-          } else {
-            pointer[key] = value;
-          }
-          break;
-        }
-
-        if (!pointer.hasOwnProperty(key)) {
-          pointer[key] = {};
-        } else if (typeof pointer[key] === "string") {
-          if (force) {
-            pointer[key] = {};
-          } else {
-            throw new Error(`Key ${key} is existing String`)
-          }
-        }
-        pointer = pointer[key];
-      }
+      var locator = valueLocator(obj, keys)
+      locator.setValue(value, force)
     },
     extractKeys(...translations) {
       // console.log(translations);
@@ -143,7 +91,7 @@ function exist (list, key) {
 
 function extract(object, list, parent = []) {
   for (const key of Object.keys(object)) {
-    const newKey = parent.concat([key]);
+    const newKey = z.concat([key]);
     if (!exist(list, newKey)) {
       list.push(newKey);
     }
