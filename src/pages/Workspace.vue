@@ -159,6 +159,7 @@ const fs = require('fs');
 import translate from "../plugins/translate.js";
 import {copyToClipboard, scroll, QSpinnerGears} from 'quasar';
 import {mapGetters} from 'vuex';
+import keyFormatter from 'src/plugins/keyFormatter.js';
 
 export default {
   name: 'Workspace',
@@ -438,9 +439,11 @@ export default {
     },
     onInputKey() {
       const selectionPosition = this.$refs.inputKey.$refs.input.selectionStart;
-      this.displayKey = this.displayKey.replace(/ /g, '_').toLowerCase();
+      const formatted = keyFormatter(this.displayKey, selectionPosition)
+
+      this.displayKey = formatted.value;
       this.$nextTick(() => {
-        this.$refs.inputKey.$refs.input.setSelectionRange(selectionPosition, selectionPosition);
+        this.$refs.inputKey.$refs.input.setSelectionRange(formatted.selectPosition, formatted.selectPosition);
       });
       this.updateFinalKey();
     },

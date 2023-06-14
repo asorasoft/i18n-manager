@@ -58,7 +58,7 @@ const dartParser = {
     }
 }
 
-// const parser = jsonParser
-const parser = dartParser
+const parser = jsonParser
+// const parser = dartParser
 
 export default parser
